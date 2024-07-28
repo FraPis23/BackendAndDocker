@@ -1,15 +1,13 @@
-import mongoose from 'mongoose'
-import {Thing} from "./thingModel.js";
-import {User} from "./userModel.js";
-import {Operation} from "./operatioModel.js";
+import mongoose from 'mongoose';
+import {Operation, OperationSchema} from "./operatioModel.js";
+import {Thing, ThingSchema} from "./thingModel.js";
 
-
-const WarehouseSchema = mongoose.Schema ({
+const WarehouseSchema = mongoose.Schema({
     name: {
         type: String,
         required: true
     },
-    description:{
+    description: {
         type: String,
         required: true,
         default: ''
@@ -28,25 +26,25 @@ const WarehouseSchema = mongoose.Schema ({
         }
     },
     lsThings: {
-        type: [Thing],
+        type: [ThingSchema],
         required: true,
         default: []
     },
-    lsAdmins:{
-        type: [User],
+    lsAdminsId: {
+        type: [String],
         required: true
     },
-    lsUsers: {
-        type: [User],
+    lsUsersId: {
+        type: [String],
         required: true,
         default: []
     },
     lsOperations: {
-        type: [Operation],
+        type: [OperationSchema],
         required: true,
         default: []
     }
 });
 
 export const Warehouse = mongoose.model('Warehouse', WarehouseSchema);
-export {WarehouseSchema};
+export { WarehouseSchema };

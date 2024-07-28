@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import {Warehouse} from "./warehouseModel.js";
+import {WarehouseSchema} from "./warehouseModel.js";
 
 const UserSchema = mongoose.Schema({
     name: {
@@ -11,15 +11,16 @@ const UserSchema = mongoose.Schema({
         required: true,
     },
     idAuth0: {
-      type: String,
-      required: true,
-      unique: true
+        type: String,
+        required: true,
+        unique: true
     },
     lsWarehouses: {
-        type: [Warehouse],
+        type: [WarehouseSchema],
         required: true,
         default: []
     }
 });
 
 export const User = mongoose.model('User', UserSchema);
+export {UserSchema};

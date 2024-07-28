@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
-import {Thing} from "./thingModel.js";
-import {User} from "./userModel.js"
+import {ThingSchema} from "./thingModel.js";
 
 const OperationSchema = mongoose.Schema(
     {
@@ -9,11 +8,15 @@ const OperationSchema = mongoose.Schema(
             required:true
         },
         lsThings: {
-            type: [Thing],
+            type: [ThingSchema],
             required: true,
         },
-        User: {
-            type: [User],
+        lsQuantity: {
+          type: [Number],
+          required: true,
+        },
+        userId: {
+            type: String,
             required: true,
         }
     }

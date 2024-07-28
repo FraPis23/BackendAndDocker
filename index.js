@@ -1,7 +1,6 @@
 import express from 'express';
 import {PORT, mongoDBURL1} from "./config.js";
 import mongoose from "mongoose";
-import {Thing} from "./models/thingModel.js";
 import usersRoute from "./routes/usersRoute.js";
 import warehousesRoute from "./routes/warehousesRoute.js";
 import operationsRoute from "./routes/operationsRoute.js";

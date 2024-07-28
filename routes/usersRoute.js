@@ -29,4 +29,50 @@ router.post('/', async (request, response) => {
     }
 });
 
+// Route to Search All Users
+router.get('/', async (request, response) => {
+    try{
+        const users = await User.find({});
+
+        return response.status(200).send(users)
+
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({error: error.message});
+    }
+})
+
+// Route to Search Users by Name and/or LastName
+router.get('/name-lastName', async (request, response) => {
+    try {
+        const { name, lastName } = request.query;
+
+        if (!name && !lastName) {
+            return response.status(400).send({ error: "Devi fornire almeno un nome o un cognome per la ricerca" });
+        }
+
+        // Search Filter
+        let searchCriteria = {};
+        if (name) {
+            searchCriteria.name = new RegExp(name, 'i'); // Search by name
+        }
+        if (lastName) {
+            searchCriteria.lastName = new RegExp(lastName, 'i'); // Search by lastName
+        }
+
+        // Search
+        const users = await User.find(searchCriteria);
+
+        if (users.length === 0) {
+            return response.status(404).send({ error: "Nessun utente trovato" });
+        }
+
+        return response.status(200).send(users);
+
+    } catch(error) {
+        console.log(error);
+        response.status(500).send({error: error.message});
+    }
+});
+
 export default router;

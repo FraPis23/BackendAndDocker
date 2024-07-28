@@ -1,5 +1,6 @@
 import express from "express";
 import {Operation} from "../models/operatioModel.js";
+import {User} from "../models/userModel.js";
 
 const router = express.Router();
 
@@ -27,5 +28,18 @@ router.post('/', async (request, response) => {
         return response.status(500).send({error: error.message});
     }
 });
+
+// Route to Search All Operations
+router.get('/', async (request, response) => {
+    try{
+        const operations = await Operation.find({});
+
+        return response.status(200).send(operations)
+
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({error: error.message});
+    }
+})
 
 export default router;

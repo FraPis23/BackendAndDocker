@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import {Operation, OperationSchema} from "./operatioModel.js";
-import {Thing, ThingSchema} from "./thingModel.js";
+import {OperationSchema} from "./operatioModel.js";
+import {ThingSchema} from "./thingModel.js";
 
 const WarehouseSchema = mongoose.Schema({
     name: {

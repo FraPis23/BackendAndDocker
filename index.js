@@ -10,13 +10,13 @@ const app = express();
 
 app.use(express.json());
 
-app.use('/user', usersRoute);
+app.use('/users', usersRoute);
 
-app.use('/warehouse', warehousesRoute);
+app.use('/warehouses', warehousesRoute);
 
-app.use('/operation', operationsRoute);
+app.use('/operations', operationsRoute);
 
-app.use('/thing', thingsRoute);
+app.use('/things', thingsRoute);
 
 app.get("/", (request, response) => {
     console.log(request);

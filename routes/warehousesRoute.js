@@ -10,19 +10,23 @@ router.post('/', async (request, response) => {
         if(
             !request.body.name
         ) {
-            return response.status(400).send("Assegnare almeno il nome al magazzino");
+            return response.status(400).send("Assegnare il nome al magazzino");
         }
         const newWarehouse = {
             name: request.body.name,
             description: request.body.description ? request.body.description : undefined,
             location: request.body.location ? request.body.location : undefined,
-            lsAdminsId: [request.body.user],
+            lsAdminsId: [request.body.userId],
             lsUsersId: undefined,
             lsThings: undefined,
             lsOperations: undefined
         }
 
         const warehouse = await Warehouse.create(newWarehouse);
+
+        const user = await User.findById(request.body.userId);
+        user.lsWarehouses.push(warehouse);
+        await user.save();
 
         return response.status(201).send(warehouse);
 

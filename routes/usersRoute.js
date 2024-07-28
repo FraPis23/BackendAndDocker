@@ -1,5 +1,6 @@
 import express from "express";
 import { User } from "../models/userModel.js"
+import {Warehouse} from "../models/warehouseModel.js";
 
 const router = express.Router();
 
@@ -42,36 +43,60 @@ router.get('/', async (request, response) => {
     }
 })
 
-// Route to Search Users by Name and/or LastName
-router.get('/name-lastName', async (request, response) => {
+// Route to Search Users by Id
+router.get('/:id', async (request, response) => {
     try {
-        const { name, lastName } = request.query;
+        const userId = request.params.id;
 
-        if (!name && !lastName) {
-            return response.status(400).send({ error: "Devi fornire almeno un nome o un cognome per la ricerca" });
+        if (!userId) {
+            return response.status(400).send({ error: "Devi fornire un ID per la ricerca" });
         }
 
-        // Search Filter
-        let searchCriteria = {};
-        if (name) {
-            searchCriteria.name = new RegExp(name, 'i'); // Search by name
-        }
-        if (lastName) {
-            searchCriteria.lastName = new RegExp(lastName, 'i'); // Search by lastName
+        // Search by _id
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return response.status(404).send({ error: "Utente non trovato" });
         }
 
-        // Search
-        const users = await User.find(searchCriteria);
-
-        if (users.length === 0) {
-            return response.status(404).send({ error: "Nessun utente trovato" });
-        }
-
-        return response.status(200).send(users);
+        return response.status(200).send(user);
 
     } catch(error) {
         console.log(error);
-        response.status(500).send({error: error.message});
+        response.status(500).send({ error: error.message });
+    }
+});
+
+// Route to Add Warehouse to WarehousesList
+router.post('/add-warehouse', async (request, response) => {
+    try {
+        const { userId, warehouseData } = request.body;
+
+        if (!userId || !warehouseData) {
+            return response.status(400).send({ error: "Alcuni dati sono assenti" });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return response.status(404).send({ error: "Utente non trovato" });
+        }
+
+        const warehouseExists = user.lsWarehouses.some(warehouse => warehouse._id.equals(warehouseData._id));
+
+        if (warehouseExists) {
+            return res.status(400).send({ error: "Il magazzino esiste già" });
+        }
+
+        const newWarehouse = new Warehouse(warehouseData);
+        user.lsWarehouses.push(newWarehouse);
+
+        await user.save();
+
+        return res.status(201).send({ message: "Magazzino aggiunto con successo", warehouse: newWarehouse });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ error: error.message });
     }
 });
 

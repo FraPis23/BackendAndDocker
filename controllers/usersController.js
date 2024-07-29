@@ -109,8 +109,10 @@ export const addWarehouseToList = async (request, response) => {
 export const deleteWarehouseFromList = async (request, response) => {
     try {
 
-        const user = await User.findById(request.body.userId);
-        user.lsWarehousesId.splice(user.lsWarehousesId.indexOf(request.body.warehouseId), 1);
+        const { userId, warehouseId} = request.params
+
+        const user = await User.findById(userId);
+        user.lsWarehousesId.splice(user.lsWarehousesId.indexOf(warehouseId), 1);
         await user.save();
         return response.status(200).send({ message: "Magazzino rimosso con successo" });
 

@@ -22,9 +22,10 @@ router.get('/:id', searchUserById);
 // Route to Search Users by Name and/or LastName
 router.get('/:id', searchUserByNameAndLastName);
 
-// Route to Add Warehouse to WarehousesList
+// Route to Add a Warehouse to WarehousesList
 router.post('/add-warehouse', addWarehouseToList);
 
+// Route to Delete a Warehouse to WarehousesList
 router.post('/delete-warehouse', deleteWarehouseFromList)
 
 export default router;

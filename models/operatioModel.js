@@ -6,7 +6,7 @@ const OperationSchema = mongoose.Schema(
             type: Date,
             required:true
         },
-        lsThingsId: {
+        lsThingsName: {
             type: [String],
             required: true,
         },
@@ -22,4 +22,4 @@ const OperationSchema = mongoose.Schema(
 );
 
 export const Operation = mongoose.model('Operation', OperationSchema);
-export {OperationSchema};
+export { OperationSchema };

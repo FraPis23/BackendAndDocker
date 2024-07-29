@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import {OperationSchema} from "./operatioModel.js";
+import {ThingSchema} from "./thingModel.js";
 
 const WarehouseSchema = mongoose.Schema({
     name: {
@@ -20,11 +22,14 @@ const WarehouseSchema = mongoose.Schema({
         coordinates: {
             type: [Number],
             required: true,
-            default: undefined
+            default: []
         }
     },
-    lsThingsId: {
-        type: [String],
+    lsThings: {
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Thing'
+        }],
         required: true,
         default: []
     },
@@ -37,8 +42,11 @@ const WarehouseSchema = mongoose.Schema({
         required: true,
         default: []
     },
-    lsOperationsId: {
-        type: [String],
+    lsOperations: {
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'OperationSchema'
+        }],
         required: true,
         default: []
     }

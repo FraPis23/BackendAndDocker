@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import {WarehouseSchema} from "./warehouseModel.js";
 
 const UserSchema = mongoose.Schema({
     name: {
@@ -15,12 +14,11 @@ const UserSchema = mongoose.Schema({
         required: true,
         unique: true
     },
-    lsWarehouses: {
-        type: [WarehouseSchema],
+    lsWarehousesId: {
+        type: [String],
         required: true,
         default: []
     }
 });
 
 export const User = mongoose.model('User', UserSchema);
-export {UserSchema};

@@ -1,6 +1,4 @@
 import mongoose from 'mongoose';
-import {OperationSchema} from "./operatioModel.js";
-import {ThingSchema} from "./thingModel.js";
 
 const WarehouseSchema = mongoose.Schema({
     name: {
@@ -25,8 +23,8 @@ const WarehouseSchema = mongoose.Schema({
             default: undefined
         }
     },
-    lsThings: {
-        type: [ThingSchema],
+    lsThingsId: {
+        type: [String],
         required: true,
         default: []
     },
@@ -39,12 +37,11 @@ const WarehouseSchema = mongoose.Schema({
         required: true,
         default: []
     },
-    lsOperations: {
-        type: [OperationSchema],
+    lsOperationsId: {
+        type: [String],
         required: true,
         default: []
     }
 });
 
 export const Warehouse = mongoose.model('Warehouse', WarehouseSchema);
-export { WarehouseSchema };

@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import {ThingSchema} from "./thingModel.js";
 
 const OperationSchema = mongoose.Schema(
     {
@@ -7,8 +6,8 @@ const OperationSchema = mongoose.Schema(
             type: Date,
             required:true
         },
-        lsThings: {
-            type: [ThingSchema],
+        lsThingsId: {
+            type: [String],
             required: true,
         },
         lsQuantity: {

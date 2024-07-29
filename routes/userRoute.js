@@ -4,7 +4,8 @@ import {
     createUser,
     deleteWarehouseFromList,
     searchAllUsers,
-    searchUserById
+    searchUserById,
+    searchUserByNameAndLastName
 } from "../controllers/usersController.js";
 
 const router = express.Router();
@@ -17,6 +18,9 @@ router.get('/', searchAllUsers)
 
 // Route to Search Users by Id
 router.get('/:id', searchUserById);
+
+// Route to Search Users by Name and/or LastName
+router.get('/:id', searchUserByNameAndLastName);
 
 // Route to Add Warehouse to WarehousesList
 router.post('/add-warehouse', addWarehouseToList);

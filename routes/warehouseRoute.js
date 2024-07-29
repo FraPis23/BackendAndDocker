@@ -1,40 +1,12 @@
 import express from 'express';
 import {Warehouse} from "../models/warehouseModel.js";
 import {User} from "../models/userModel.js";
+import {createWarehouse} from "../controllers/warehouseController.js";
 
 const router = express.Router();
 
 // Route to Create a new Warehouse
-router.post('/', async (request, response) => {
-    try{
-        if(
-            !request.body.name
-        ) {
-            return response.status(400).send("Assegnare il nome al magazzino");
-        }
-        const newWarehouse = {
-            name: request.body.name,
-            description: request.body.description ? request.body.description : undefined,
-            location: request.body.location ? request.body.location : undefined,
-            lsAdminsId: [request.body.userId],
-            lsUsersId: undefined,
-            lsThings: undefined,
-            lsOperations: undefined
-        }
-
-        const warehouse = await Warehouse.create(newWarehouse);
-
-        const user = await User.findById(request.body.userId);
-        user.lsWarehouses.push(warehouse);
-        await user.save();
-
-        return response.status(201).send(warehouse);
-
-    } catch (error) {
-        console.log(error);
-        return response.status(500).send({error: error.message});
-    }
-});
+router.post('/', createWarehouse);
 
 // Route to Search All Warehouses
 router.get('/', async (request, response) => {

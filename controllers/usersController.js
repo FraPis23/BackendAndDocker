@@ -59,6 +59,34 @@ export const searchUserById = async (request, response) => {
     }
 };
 
+export const searchUserByNameAndLastName = async (request, response) => {
+    try {
+        if (!request.query.name || !request.query.lastName) {
+            return response.status(400).send({ error: "Fornire un nome e/o un cognome" });
+        }
+
+        let searchCriteria = {};
+        if (request.body.name) {
+            searchCriteria.name = { $regex: request.body.name, $options: 'i' };
+        }
+        if (request.body.lastName) {
+            searchCriteria.lastName = { $regex: request.body.lastName, $options: 'i' };
+        }
+
+        const users = await User.find(searchCriteria);
+
+        if (users.length === 0) {
+            return response.status(404).send({ error: "Utente non trovato" });
+        }
+
+        return response.status(200).send(users);
+
+    } catch (error) {
+        console.log(error);
+        response.status(500).send({ error: error.message });
+    }
+}
+
 export const addWarehouseToList = async (request, response) => {
     try {
 

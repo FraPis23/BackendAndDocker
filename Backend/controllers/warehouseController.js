@@ -1,5 +1,7 @@
 import { Warehouse } from "../models/warehouseModel.js";
 import {Thing} from "../models/thingModel.js";
+import {Operation} from "../models/operatioModel.js";
+import {User} from "../models/userModel.js";
 
 export const createWarehouse = async (request, response) => {
     try{
@@ -126,3 +128,95 @@ export const deleteWarehouse = async (req, res) => {
         return res.status(500).send({ error: error.message });
     }
 };
+
+
+
+//E' un casino vedi tu come fare @FRa_Piscopo, Bugia forse ha senso, dai un occhio
+export const createOperation = async (request, response) => {
+    try{
+        if(
+            !request.body.name
+        ) {
+            return response.status(400).send("Assegnare il nome all'operazione");
+        }
+
+        const newOperation = {
+            date: request.body.date,
+            lsThingsName: request.body.lsThingsName ? request.body.lsThingsName : undefined,
+            lsQuantity: request.body.lsQuantity ? request.body.lsQuantity : undefined,
+            userId: request.body.userId,
+        }
+
+        const operation = await Operation.create(newOperation);
+        const warehouse = await Warehouse.findById(operation.userId);
+
+        if (!warehouse) {
+            return res.status(404).send({ error: "Magazzino non trovato" });
+        }
+
+        warehouse.lsOperations.push(operation);
+        await warehouse.save();
+
+        return response.status(201).send(operation); // operation o magazzino?
+
+    }catch(error){
+        console.log(error);
+        return response.status(500).send({ error: error.message });
+    }
+};
+
+
+
+export const addUser = async (request, response) => {
+    try{
+        const { warehouseId, userId } = request.params;
+
+        if (!warehouseId) {
+            return response.status(400).send("Assegnare il nome del magazzino");
+        }
+        if (!userId) {
+            return response.status(400).send("Assegnare il nome dell'utente");
+        }
+
+        const warehouse = await Warehouse.findById(warehouseId);
+        warehouse.lsUsersId.push(userId);
+        await warehouse.save();
+
+        return response.status(201).send({message: "Utente aggiunto al magazzino " &warehouseId});
+
+
+    }catch (error) {
+        console.log(error);
+        return response.status(500).send({ error: error.message });
+    }
+}
+
+
+
+export const removeUser = async (request, response) => {
+    try{
+        const { warehouseId, userId } = request.params;
+
+        if (!warehouseId) {
+            return response.status(400).send("Assegnare il nome del magazzino");
+        }
+        if (!userId) {
+            return response.status(400).send("Assegnare il nome dell'utente");
+        }
+
+        const warehouse = await Warehouse.findById(warehouseId);
+
+        warehouse.lsThings.splice(warehouse.lsUsersId.indexOf(userId), 1);
+
+        await warehouse.save();
+
+        return response.status(200).send({ message: "Utente eliminato con successo" });
+
+    } catch (error) {
+        console.log(error);
+        return response.status(500).send({ error: error.message });
+    }
+}
+
+//IO farei una funzione in più che aggiunge i valori 0(Admin), 1 (operaio) ad una lista in WareHouse parallela
+// a quella degli userId che si muove insieme {quando elimino Id elimino pure ruolo nell'altra lista}

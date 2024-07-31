@@ -45,7 +45,7 @@ const WarehouseSchema = mongoose.Schema({
     lsOperations: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'OperationSchema'
+            ref: 'Operation'
         }],
         required: true,
         default: []

@@ -85,7 +85,7 @@ export const searchUserByNameAndLastName = async (request, response) => {
         console.log(error);
         response.status(500).send({ error: error.message });
     }
-}
+};
 
 export const addWarehouseToList = async (request, response) => {
     try {

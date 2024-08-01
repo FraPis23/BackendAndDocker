@@ -20,7 +20,10 @@ export const createThing = async (request, response) => {
     }
 };
 
-export const getThingById = async (request, response) => {
+
+
+
+/*export const getThingById = async (request, response) => {
 
     try {
 
@@ -38,10 +41,18 @@ export const getThingById = async (request, response) => {
         console.log(error);
         return response.status(500).send({error: error.message});
     }
-}
+}*/
 
 export const deleteThing = async (request, response) => {
     try{
+
+        if(!request.body.thingId){
+            return response.status(400).send("Nessun Id assegnato per l'operazione")
+        }
+
+        const thing = await Thing.findByIdAndDelete(request.params.thingId);
+
+        return response.status(201).send("Oggetto rimosso");
 
     }catch (error){
         console.log(error);

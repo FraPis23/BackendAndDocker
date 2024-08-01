@@ -10,6 +10,12 @@ export const createWarehouse = async (request, response) => {
         ) {
             return response.status(400).send("Assegnare il nome al magazzino");
         }
+
+        if(
+            !request.body.userId
+        ){
+            return response.status(400).send("Assegnare userId");
+        }
         const newWarehouse = {
             name: request.body.name,
             description: request.body.description ? request.body.description : undefined,
@@ -27,28 +33,28 @@ export const createWarehouse = async (request, response) => {
         console.log(error);
         response.status(500).send({error: error.message});
     }
-}
+};
 
 
-export const deleteWarehouse = async (req, res) => {
+export const deleteWarehouse = async (request, response) => {
     try {
-        const { id } = req.params;
+        const { id } = request.params;
 
         if (!id) {
-            return res.status(400).send({ error: "ID del magazzino non fornito" });
+            return response.status(400).send({ error: "ID del magazzino non fornito" });
         }
 
         const warehouse = await Warehouse.findByIdAndDelete(id);
 
         if (!warehouse) {
-            return res.status(404).send({ error: "Magazzino non trovato" });
+            return response.status(404).send({ error: "Magazzino non trovato" });
         }
 
-        return res.status(200).send({ message: "Magazzino eliminato con successo" });
+        return response.status(200).send({ message: "Magazzino eliminato con successo" });
 
     } catch (error) {
         console.log(error);
-        return res.status(500).send({ error: error.message });
+        return response.status(500).send({ error: error.message });
     }
 };
 
@@ -62,11 +68,19 @@ export const createThing = async (request, response) => {
         }
 
         const warehouse = await Warehouse.findById(request.body.warehouseId);
+
+
+
+        if(warehouse.lsThings.includes(request.body.thingId))
+        {
+            return response.status(401).send("Oggetto già presente ");
+        }
+
         const thing = await Thing.findById(request.body.thingId);
         warehouse.lsThings.push(thing);
         warehouse.save();
 
-        return response.status(201).json({message:"Oggetto aggiunto con successo", thing, warehouse});
+        return response.status(201).send({message:"Oggetto aggiunto con successo", thing, warehouse});
 
     } catch (error) {
         console.log(error);
@@ -136,9 +150,8 @@ export const createOperation = async (request, response) => {
 
 export const deleteOperations = async (request, response) => {
     try {
-        const { id } = request.params;
 
-        if (!id) {
+        if (!request.body.warehouseId) {
             return response.status(400).send("Assegnare l'ID del magazzino");
         }
 
@@ -146,7 +159,7 @@ export const deleteOperations = async (request, response) => {
         const thirtyDaysAgo = new Date(today);
         thirtyDaysAgo.setDate(today.getDate() - 30);
 
-        const warehouse = await Warehouse.findById(id).populate('lsOperations');
+        const warehouse = await Warehouse.findById(request.body.warehouseId).populate('lsOperations');
 
         if (!warehouse) {
             return response.status(404).send("Magazzino non trovato");
@@ -156,13 +169,14 @@ export const deleteOperations = async (request, response) => {
 
         const operationIdsToDelete = operationsToDelete.map(operation => operation._id);
 
+        await Operation.deleteMany({ _id: { $in: operationIdsToDelete } });
+
         warehouse.lsOperations = warehouse.lsOperations.filter(
-            operationId => !operationIdsToDelete.includes(operationId)
+            operation => !operationIdsToDelete.includes(operation._id)
         );
 
         await warehouse.save();
 
-        await Operation.deleteMany({ _id: { $in: operationIdsToDelete } });
 
         return response.status(200).send({
             message: 'Operazioni eliminate con successo',
@@ -178,17 +192,16 @@ export const deleteOperations = async (request, response) => {
 
 export const addUser = async (request, response) => {
     try{
-        const { warehouseId, userId } = request.params;
 
-        if (!warehouseId) {
+        if (!request.body.warehouseId) {
             return response.status(400).send("Assegnare l'ID del magazzino");
         }
-        if (!userId) {
+        if (!request.body.userId) {
             return response.status(400).send("Assegnare ID dell'utente");
         }
 
-        const warehouse = await Warehouse.findById(warehouseId);
-        warehouse.lsUsersId.push(userId);
+        const warehouse = await Warehouse.findById(request.body.warehouseId);
+        warehouse.lsUsersId.push(request.body.userId);
         await warehouse.save();
 
         return response.status(201).send({message: "Utente aggiunto al magazzino "});
@@ -203,17 +216,16 @@ export const addUser = async (request, response) => {
 
 export const addAdmin = async (request, response) => {
     try{
-        const { warehouseId, userId } = request.params;
 
-        if (!warehouseId) {
+        if (!request.body.warehouseId) {
             return response.status(400).send("Assegnare l'ID del magazzino");
         }
-        if (!userId) {
+        if (!request.body.userId) {
             return response.status(400).send("Assegnare ID dell'amministratore");
         }
 
-        const warehouse = await Warehouse.findById(warehouseId);
-        warehouse.lsAdminId.push(userId);
+        const warehouse = await Warehouse.findById(request.body.warehouseId);
+        warehouse.lsAdminId.push(request.body.userId);
         await warehouse.save();
 
         return response.status(201).send({message: "Amministratore aggiunto al magazzino "});
@@ -228,18 +240,17 @@ export const addAdmin = async (request, response) => {
 
 export const deleteUser = async (request, response) => {
     try{
-        const { warehouseId, userId } = request.params;
 
-        if (!warehouseId) {
+        if (!request.body.warehouseId) {
             return response.status(400).send("Assegnare l'ID del magazzino");
         }
-        if (!userId) {
+        if (!request.body.userId) {
             return response.status(400).send("Assegnare ID dell'utente");
         }
 
-        const warehouse = await Warehouse.findById(warehouseId);
+        const warehouse = await Warehouse.findById(request.body.warehouseId);
 
-        warehouse.lsThings.splice(warehouse.lsUsersId.indexOf(userId), 1);
+        warehouse.lsUsersId.splice(warehouse.lsUsersId.indexOf(request.body.userId), 1);
 
         await warehouse.save();
 
@@ -254,18 +265,18 @@ export const deleteUser = async (request, response) => {
 
 export const deleteAdmin = async (request, response) => {
     try{
-        const { warehouseId, userId } = request.params;
 
-        if (!warehouseId) {
+
+        if (!request.body.warehouseId) {
             return response.status(400).send("Assegnare l'ID del magazzino");
         }
-        if (!userId) {
+        if (!request.body.userId) {
             return response.status(400).send("Assegnare ID dell'amministratore");
         }
 
-        const warehouse = await Warehouse.findById(warehouseId);
+        const warehouse = await Warehouse.findById(request.body.warehouseId);
 
-        warehouse.lsThings.splice(warehouse.lsAdminId.indexOf(userId), 1);
+        warehouse.lsAdminId.splice(warehouse.lsAdminId.indexOf(request.body.userId), 1);
 
         await warehouse.save();
 
@@ -281,11 +292,13 @@ export const deleteAdmin = async (request, response) => {
 export const getWarehoseById = async (request, response) => {
     try {
 
-        if (!request.params) {
+        const {id} = request.params;
+
+        if (!id) {
             return response.status(400).send({ error: "Devi fornire un ID per la ricerca" });
         }
 
-        const warehouse = await Warehouse.findById(request.params);
+        const warehouse = await Warehouse.findById(id);
 
         if(!warehouse)
         {
@@ -327,7 +340,7 @@ export const getThings = async (request, response) => {
     }
 };
 
-
+// Da rivedere
 export const getThingByName = async (request, response) => {
 
             try {
@@ -354,19 +367,19 @@ export const getThingByName = async (request, response) => {
 
 export const getUsers = async (request, response) => {
     try{
-        const { id } = request.params;
-        if(!id)
+        if(!request.body.warehouseId)
         {
             return response.status(400).send("Assegnare l'ID del magazzino");
         }
 
-        const warehouse = await Warehouse.findById(id);
+        const warehouse = await Warehouse.findById(request.body.warehouseId);
         if(!warehouse)
         {
             return response.status(400).send("Magazzino non trovato");
         }
 
         const lsUsers = await warehouse.lsUsersId;
+
         return response.status(200).send(lsUsers);
     } catch (error){
         console.log(error);
@@ -377,19 +390,20 @@ export const getUsers = async (request, response) => {
 
 export const getAdmins = async (request, response) => {
     try{
-        const { id } = request.params;
-        if(!id)
+
+        if(!request.body.warehouseId)
         {
             return response.status(400).send("Assegnare l'ID del magazzino");
         }
 
-        const warehouse = await Warehouse.findById(id);
+        const warehouse = await Warehouse.findById(request.body.warehouseId);
         if(!warehouse)
         {
             return response.status(400).send("Magazzino non trovato");
         }
 
         const lsAdmins = await warehouse.lsAdminsId;
+
         return response.status(200).send(lsAdmins);
     } catch (error){
         console.log(error);
@@ -400,19 +414,19 @@ export const getAdmins = async (request, response) => {
 
 export const getOperations = async (request, response) => {
     try{
-        const { id } = request.params;
-        if(!id)
+
+        if(!request.body.warehouseId)
         {
             return response.status(400).send("Assegnare l'ID del magazzino");
         }
 
-        const warehouse = await Warehouse.findById(id);
+        const warehouse = await Warehouse.findById(request.body.warehouseId);
         if(!warehouse)
         {
             return response.status(400).send("Magazzino non trovato");
         }
 
-        const lsOperations = await warehouse.lsOperations();
+        const lsOperations = await warehouse.lsOperations;
         return response.status(200).send(lsOperations);
 
     }catch (error){

@@ -1,15 +1,19 @@
 import express from "express";
 import {
+    createThing,
     addThingQuantity,
-    createThing, deductThingQuantity,
-    getThingById,
-    updateThingDetails
+    deductThingQuantity,
+    updateThingDetails,
+    deleteThing
 } from "../controllers/thingsController.js";
 
 const router = express.Router();
 
 // Route to Create a new Thing
 router.post('/', createThing);
+
+// Route to Delete a Thing
+router.post('/delete', deleteThing);
 
 // Route to Update a Thing
 router.post('/update-details', updateThingDetails);
@@ -20,7 +24,5 @@ router.post('/add-quantity', addThingQuantity);
 // Route to Reduce the Quantity of a Thing
 router.post('/deduct-quantity', deductThingQuantity);
 
-// Route to Get Thing By Id
-router.get('/:id', getThingById);
 
 export default router;

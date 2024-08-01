@@ -25,6 +25,7 @@ export const createUser = async (request, response) => {
     }
 };
 
+
 export const searchAllUsers = async (request, response) => {
     try {
         const users = await User.find({});
@@ -36,6 +37,7 @@ export const searchAllUsers = async (request, response) => {
         response.status(500).send({error: error.message});
     }
 };
+
 
 export const searchUserById = async (request, response) => {
     try {
@@ -58,6 +60,7 @@ export const searchUserById = async (request, response) => {
         response.status(500).send({ error: error.message });
     }
 };
+
 
 export const searchUserByNameAndLastName = async (request, response) => {
     try {
@@ -88,6 +91,7 @@ export const searchUserByNameAndLastName = async (request, response) => {
     }
 };
 
+
 export const addWarehouseToList = async (request, response) => {
     try {
 
@@ -111,6 +115,7 @@ export const addWarehouseToList = async (request, response) => {
         response.status(500).send({ error: error.message });
     }
 };
+
 
 export const deleteWarehouseFromList = async (request, response) => {
     try {

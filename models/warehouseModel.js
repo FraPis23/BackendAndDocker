@@ -9,19 +9,16 @@ const WarehouseSchema = mongoose.Schema({
     },
     description: {
         type: String,
-        required: true,
         default: ''
     },
     location: {
         type: {
             type: String,
             enum: ['Point'],
-            required: true,
             default: 'Point'
         },
         coordinates: {
             type: [Number],
-            required: true,
             default: []
         }
     },

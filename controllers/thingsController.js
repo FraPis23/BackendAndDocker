@@ -1,10 +1,10 @@
 import { Thing } from '../models/thingModel.js';
 
 
-export const createThing = async (request, ressponse) => {
+export const createThing = async (request, response) => {
 
     try{
-        const createThing = new Thing({
+        const newThing = new Thing({
             name: request.body.name,
             quantity: request.body.quantity ? request.body.quantity : undefined,
             minQuantity: request.body.minQuantity ? request.body.minQuantity : undefined
@@ -23,11 +23,14 @@ export const createThing = async (request, ressponse) => {
 export const getThingById = async (request, response) => {
 
     try {
-        if(!request.body.id){
+
+        const { id } = request.params;
+
+        if(!id){
             return response.status(400).send("Nessun Id assegnato per l'operazione")
         }
 
-        const thing = await Thing.findById(request.params.id);
+        const thing = await Thing.findById(id);
 
         return response.status(201).send(thing);
 
@@ -37,17 +40,18 @@ export const getThingById = async (request, response) => {
     }
 }
 
-export const deleteThing = async (request, resposnse) => {
+export const deleteThing = async (request, response) => {
     try{
 
     }catch (error){
         console.log(error);
-        return resposnse.status(500).send({error:error.message})
+        return response.status(500).send({error:error.message})
     }
 };
 
-export const updateThingDetails = async (request, resposnse) => {
+export const updateThingDetails = async (request, response) => {
     try {
+
         if(!request.body.thingId) {
             return response.status(400).send("Nessun Id assegnato per l'operazione")
         }
@@ -56,28 +60,77 @@ export const updateThingDetails = async (request, resposnse) => {
             !request.body.name &&
             !request.body.minQuantity
         ) {
-            return resposnse.status(400).send("Nessun dato modificato");
+            return response.status(400).send("Nessun dato modificato");
         }
 
-        let update = {};
+        const thing = await Thing.findById(request.body.thingId);
 
         if(request.body.name){
-            update.name = request.body.name
+            thing.name = request.body.name
         }
 
         if(request.body.minQuantity){
-            update.minQuantity = request.body.minQuantity;
+            thing.minQuantity = request.body.minQuantity;
         }
 
-        const thing = await Thing.findByIdAndUpdate(request.params.thingId, update);
         thing.save();
 
         return response.status(201).send(thing);
 
     } catch (error) {
         console.log(error);
-        return res.status(500).send({error: error.message})
+        return response.status(500).send({error: error.message})
     }
 };
 
-export const updateThingQuantity = async (request, resposnse) => {}
+export const addThingQuantity = async (request, response) => {
+    try {
+
+        if(!request.body.thingId) {
+            return response.status(400).send("Nessun Id assegnato per l'operazione")
+        }
+
+        if (
+            !request.body.quantity
+        ) {
+            return response.status(400).send("Nessun dato modificato");
+        }
+
+        const thing = await Thing.findById(request.body.thingId);
+
+        thing.quantity = thing.quantity + request.body.quantity;
+        thing.save();
+
+        return response.status(201).send(thing);
+
+    } catch (error) {
+        console.log(error);
+        return response.status(500).send({error: error.message})
+    }
+};
+
+export const deductThingQuantity = async (request, response) => {
+    try {
+
+        if(!request.body.thingId) {
+            return response.status(400).send("Nessun Id assegnato per l'operazione")
+        }
+
+        if (
+            !request.body.quantity
+        ) {
+            return response.status(400).send("Nessun dato modificato");
+        }
+
+        const thing = await Thing.findById(request.body.thingId);
+
+        thing.quantity = thing.quantity - request.body.quantity;
+        thing.save();
+
+        return response.status(201).send(thing);
+
+    } catch (error) {
+        console.log(error);
+        return response.status(500).send({error: error.message})
+    }
+};

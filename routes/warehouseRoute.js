@@ -12,8 +12,10 @@ import {
     deleteAdmin,
     getThings,
     getThingByName,
-    deleteOperation,
-    getUser, getAdmin, getOperation
+    deleteOperations,
+    getUsers,
+    getAdmins,
+    getOperations
 } from "../controllers/warehouseController.js";
 
 
@@ -21,12 +23,6 @@ const router = express.Router();
 
 // Route to Create a new Warehouses
 router.post('/', createWarehouse);
-
-// Route to Delete a Warehouse by Id
-router.post('/:id', deleteWarehouse);
-
-// Route to Search All Warehouses
-router.get('/:id', getWarehoseById);
 
 // Route to Create a new Things
 router.post('/new-thing', createThing)
@@ -66,5 +62,11 @@ router.get('/get-admin', getAdmins);
 
 // Route to get a new operations
 router.get('/get-operation', getOperations);
+
+// Route to Delete a Warehouse by Id
+router.post('/:id', deleteWarehouse);
+
+// Route to Search All Warehouses
+router.get('/:id', getWarehoseById);
 
 export default router;

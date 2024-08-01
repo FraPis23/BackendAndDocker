@@ -1,41 +1,20 @@
-import express from 'express';
-import {Thing} from "../models/thingModel.js";
-import {createThing} from "../controllers/thingController.js";
+import express from "express";
+import {
+    createThing,
+    getThingById,
+    updateThingDetails
+} from "../controllers/thingsController.js";
+
 
 const router = express.Router();
 
 // Route to Create a new Thing
 router.post('/', createThing);
 
-// Route to Search All Things
-router.get('/', async (request, response) => {
-    try{
-        const things= await Thing.find({});
+// Route to Update a Thing
+router.post('/update-details', updateThingDetails);
 
-        return response.status(200).send(things)
-
-    } catch (error) {
-        console.log(error.message);
-        response.status(500).send({error: error.message});
-    }
-})
-
-// Route to Delete a Thing by Id
-router.delete('/:id', async (request, response) => {
-    try{
-        const { id } = request.params;
-        const result = await Thing.findByIdAndDelete(id);
-
-        if (!result) {
-            return response.status(404).send({message: error.message});
-        }
-
-        return response.status(200).send({ message: 'Oggetto eliminato con successo'})
-
-    } catch (error) {
-        console.log(error.message);
-        response.status(500).send({ message: error.message});
-    }
-})
+// Route to Get Thing By Id
+router.get('/:id', getThingById);
 
 export default router;

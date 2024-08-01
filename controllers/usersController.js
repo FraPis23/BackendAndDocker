@@ -40,12 +40,12 @@ export const searchAllUsers = async (request, response) => {
 export const searchUserById = async (request, response) => {
     try {
 
-        if (!request.params.userId) {
+        if (!request.params) {
             return response.status(400).send({ error: "Devi fornire un ID per la ricerca" });
         }
 
         // Search by _id
-        const user = await User.findById(request.params.userId);
+        const user = await User.findById(request.params);
 
         if (!user) {
             return response.status(404).send({ error: "Utente non trovato" });
@@ -61,19 +61,20 @@ export const searchUserById = async (request, response) => {
 
 export const searchUserByNameAndLastName = async (request, response) => {
     try {
-        if (!request.query.name || !request.query.lastName) {
+
+        if (!request.body.name && !request.body.lastName) {
             return response.status(400).send({ error: "Fornire un nome e/o un cognome" });
         }
 
-        let searchCriteria = {};
+        let filter = {};
         if (request.body.name) {
-            searchCriteria.name = { $regex: request.body.name, $options: 'i' };
+            filter.name = new RegExp(request.body.name, 'i');
         }
         if (request.body.lastName) {
-            searchCriteria.lastName = { $regex: request.body.lastName, $options: 'i' };
+            filter.lastName = new RegExp(request.body.lastName, 'i');
         }
 
-        const users = await User.find(searchCriteria);
+        const users = await User.find(filter);
 
         if (users.length === 0) {
             return response.status(404).send({ error: "Utente non trovato" });
@@ -82,8 +83,8 @@ export const searchUserByNameAndLastName = async (request, response) => {
         return response.status(200).send(users);
 
     } catch (error) {
-        console.log(error);
-        response.status(500).send({ error: error.message });
+        console.error(error); // Usa console.error per loggare gli errori
+        return response.status(500).send({ error: error.message });
     }
 };
 
@@ -91,14 +92,19 @@ export const addWarehouseToList = async (request, response) => {
     try {
 
         const user = await User.findById(request.body.userId);
-
-        if (user.lsWarehousesId.some(warehouseId => warehouseId.equals(request.body.warehouseId))) {
-            return response.status(400).send({ error: "Il magazzino esiste già" });
+        if (!user) {
+            return response.status(404).json({ error: "Utente non trovato" });
         }
+
+        if (user.lsWarehousesId.includes(request.body.warehouseId)) {
+            return response.status(400).json({ error: "Il magazzino esiste già" });
+        }
+
 
         user.lsWarehousesId.push(request.body.warehouseId);
         await user.save();
-        return response.status(201).send({ message: "Magazzino aggiunto con successo", warehouse: newWarehouse });
+
+        return response.status(201).send({ message: "Magazzino aggiunto con successo", user});
 
     } catch (error) {
         console.log(error);
@@ -109,15 +115,13 @@ export const addWarehouseToList = async (request, response) => {
 export const deleteWarehouseFromList = async (request, response) => {
     try {
 
-        const { userId, warehouseId} = request.params
-
-        const user = await User.findById(userId);
-        user.lsWarehousesId.splice(user.lsWarehousesId.indexOf(warehouseId), 1);
+        const user = await User.findById(request.body.userId);
+        user.lsWarehousesId.splice(user.lsWarehousesId.indexOf(request.body.warehouseId), 1);
         await user.save();
         return response.status(200).send({ message: "Magazzino rimosso con successo" });
 
     } catch (error) {
         console.log(error);
-        response.status(500).send({ error: error.message });
+        return response.status(500).send({ error: error.message });
     }
 };

@@ -16,16 +16,16 @@ router.post('/', createUser);
 // Route to Search All Users
 router.get('/', searchAllUsers)
 
-// Route to Search Users by Id
-router.get('/:id', searchUserById);
-
 // Route to Search Users by Name and/or LastName
-router.get('/:id', searchUserByNameAndLastName);
+router.get('/search', searchUserByNameAndLastName);
 
 // Route to Add a Warehouse to WarehousesList
 router.post('/add-warehouse', addWarehouseToList);
 
 // Route to Delete a Warehouse to WarehousesList
-router.post('/delete-warehouse', deleteWarehouseFromList)
+router.post('/delete-warehouse', deleteWarehouseFromList);
+
+// Route to Search Users by Id
+router.get('/:id', searchUserById);
 
 export default router;

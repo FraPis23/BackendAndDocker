@@ -1,10 +1,10 @@
 import express from 'express';
-import {PORT, mongoDBURL1} from "./config.js";
+import {PORT, mongoDBURL, mongoDBURL1, mongoDBURL2} from "./config.js";
 import mongoose from "mongoose";
 import userRoute from "./routes/userRoute.js";
 import warehouseRoute from "./routes/warehouseRoute.js";
-import operationRoute from "./routes/operationRoute.js";
 import thingRoute from "./routes/thingRoute.js";
+
 
 const app = express();
 
@@ -14,9 +14,7 @@ app.use('/users', userRoute);
 
 app.use('/warehouses', warehouseRoute);
 
-app.use('/operations', operationRoute);
-
-app.use('/things', thingRoute);
+app.use('/things', thingRoute)
 
 app.get("/", (request, response) => {
     console.log(request);

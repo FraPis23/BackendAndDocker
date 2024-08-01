@@ -1,6 +1,7 @@
 import { Warehouse } from "../models/warehouseModel.js";
 import {Thing} from "../models/thingModel.js";
 import {Operation} from "../models/operatioModel.js";
+import {User} from "../models/userModel.js";
 
 
 export const createWarehouse = async (request, response) => {
@@ -325,12 +326,12 @@ export const getThings = async (request, response) => {
             return response.status(400).send("Assegnare l'ID del magazzino");
         }
 
-        const warehose = Warehouse.findById(id);
-        if(!warehose)
+        const warehouse = Warehouse.findById(id);
+        if(!warehouse)
         {
             return response.status(400).send("Magazzino non trovato");
         }
-        const lsThings = warehose.lsThings();
+        const lsThings = warehouse.lsThings();
         return response.status(200).send(lsThings);
         
 
@@ -344,17 +345,30 @@ export const getThings = async (request, response) => {
 export const getThingByName = async (request, response) => {
 
             try {
-                if (!request.query.name) {
+
+                const {name, warehouseId} = request.body;
+
+                if (!name) {
                     return response.status(400).send({ error: "Fornire un nome oggetto" });
                 }
+                if(!warehouseId){
+                    return response.status(400).send({ error: "Assegnare ID del magazzino" });
+                }
 
-                let searchCriteria = {$regex: request.body.name, $options: 'i'};
+                const filter = { name: new RegExp(name, 'i') };
 
-                const things = await Thing.find(searchCriteria);
+                const warehouse = await Warehouse.findById(warehouseId).populate('lsThings');
+
+                if (!warehouse) {
+                    return response.status(404).send({ error: "Magazzino non trovato" });
+                }
+
+                const things = warehouse.lsThings.filter(thing => filter.name.test(thing.name));
 
                 if (things.length === 0) {
                     return response.status(404).send({ error: "Oggetto non trovato" });
                 }
+
 
                 return response.status(200).send(things);
 

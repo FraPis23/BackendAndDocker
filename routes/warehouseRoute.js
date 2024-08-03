@@ -21,9 +21,6 @@ import {
 
 const router = express.Router();
 
-// Route to Create a new Warehouses
-router.post('/', createWarehouse);
-
 // Route to Create a new Things
 router.post('/new-thing', createThing)
 
@@ -49,7 +46,7 @@ router.post('/delete-admin', deleteAdmin);
 router.get('/get-things', getThings);
 
 // Route to get a thingsByName
-router.get('get-thingsByName', getThingByName);
+router.get('/get-thingsByName', getThingByName);
 
 // Route to delete a operations
 router.post('/delete-operation', deleteOperations);
@@ -68,5 +65,9 @@ router.post('/:id', deleteWarehouse);
 
 // Route to Search All Warehouses
 router.get('/:id', getWarehoseById);
+
+// Route to Create a new Warehouses
+router.post('/', createWarehouse);
+
 
 export default router;

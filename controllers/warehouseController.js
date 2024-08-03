@@ -1,7 +1,6 @@
 import { Warehouse } from "../models/warehouseModel.js";
 import {Thing} from "../models/thingModel.js";
 import {Operation} from "../models/operatioModel.js";
-import {User} from "../models/userModel.js";
 
 
 export const createWarehouse = async (request, response) => {
@@ -346,18 +345,16 @@ export const getThingByName = async (request, response) => {
 
             try {
 
-                const {name, warehouseId} = request.body;
-
-                if (!name) {
+                if (!request.query.name) {
                     return response.status(400).send({ error: "Fornire un nome oggetto" });
                 }
-                if(!warehouseId){
+                if (!request.query.warehouseId){
                     return response.status(400).send({ error: "Assegnare ID del magazzino" });
                 }
 
-                const filter = { name: new RegExp(name, 'i') };
+                const filter = { name: new RegExp(request.query.name, 'i') };
 
-                const warehouse = await Warehouse.findById(warehouseId).populate('lsThings');
+                const warehouse = await Warehouse.findById(request.query.warehouseId).populate('lsThings');
 
                 if (!warehouse) {
                     return response.status(404).send({ error: "Magazzino non trovato" });

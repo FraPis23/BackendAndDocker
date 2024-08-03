@@ -65,16 +65,16 @@ export const searchUserById = async (request, response) => {
 export const searchUserByNameAndLastName = async (request, response) => {
     try {
 
-        if (!request.body.name && !request.body.lastName) {
+        if (!request.query.name && !request.query.lastName) {
             return response.status(400).send({ error: "Fornire un nome e/o un cognome" });
         }
 
         let filter = {};
-        if (request.body.name) {
-            filter.name = new RegExp(request.body.name, 'i');
+        if (request.query.name) {
+            filter.name = new RegExp(request.query.name, 'i');
         }
-        if (request.body.lastName) {
-            filter.lastName = new RegExp(request.body.lastName, 'i');
+        if (request.query.lastName) {
+            filter.lastName = new RegExp(request.query.lastName, 'i');
         }
 
         const users = await User.find(filter);

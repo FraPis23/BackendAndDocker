@@ -42,12 +42,14 @@ export const searchAllUsers = async (request, response) => {
 export const searchUserById = async (request, response) => {
     try {
 
-        if (!request.params) {
+        const userId = request.params.id;
+
+        if (!userId) {
             return response.status(400).send({ error: "Devi fornire un ID per la ricerca" });
         }
 
         // Search by _id
-        const user = await User.findById(request.params);
+        const user = await User.findById(userId);
 
         if (!user) {
             return response.status(404).send({ error: "Utente non trovato" });

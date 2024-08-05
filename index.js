@@ -1,6 +1,7 @@
 import express from 'express';
 import {PORT, mongoDBURL, mongoDBURL1, mongoDBURL2} from "./config.js";
 import mongoose from "mongoose";
+import cors from "cors";
 import userRoute from "./routes/userRoute.js";
 import warehouseRoute from "./routes/warehouseRoute.js";
 import thingRoute from "./routes/thingRoute.js";
@@ -8,13 +9,18 @@ import thingRoute from "./routes/thingRoute.js";
 
 const app = express();
 
+app.use(cors({
+    origin: "http://localhost:3000",
+    optionSuccessStatus: 200
+})
+);
 app.use(express.json());
 
-app.use('/users', userRoute);
+app.use('/api/users', userRoute);
 
-app.use('/warehouses', warehouseRoute);
+app.use('/api/warehouses', warehouseRoute);
 
-app.use('/things', thingRoute)
+app.use('/api/things', thingRoute)
 
 app.get("/", (request, response) => {
     console.log(request);

@@ -5,7 +5,8 @@ import {
     deleteWarehouseFromList,
     searchAllUsers,
     searchUserById,
-    searchUserByNameAndLastName
+    searchUserByNameAndLastName,
+    checkToken
 } from "../controllers/usersController.js";
 
 const router = express.Router();
@@ -14,7 +15,10 @@ const router = express.Router();
 router.post('/', createUser);
 
 // Route to Search All Users
-router.get('/', searchAllUsers)
+router.get('/', searchAllUsers);
+
+// Route to Check the Auth0 Token
+router.get('/check-token', checkToken);
 
 // Route to Search Users by Name and/or LastName
 router.get('/search', searchUserByNameAndLastName);

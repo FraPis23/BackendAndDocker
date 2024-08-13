@@ -39,6 +39,24 @@ export const searchAllUsers = async (request, response) => {
 };
 
 
+export const checkToken = async (request, response) => {
+    try {
+
+        const user = await User.findOne({ idAuth0: request.body.idAuth0 });
+
+        if (user) {
+            response.json({ exists: true });
+        } else {
+            response.json({ exists: false });
+        }
+
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({error: error.message});
+    }
+};
+
+
 export const searchUserById = async (request, response) => {
     try {
 

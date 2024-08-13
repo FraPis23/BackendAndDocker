@@ -1,54 +1,48 @@
 import express from 'express';
-import mongoose from "mongoose";
 import cors from "cors";
 import {auth} from 'express-oauth2-jwt-bearer'
-
-import {PORT, mongoDBURL, mongoDBURL1, mongoDBURL2, HOST} from "./config.js";
 
 import userRoute from "./routes/userRoute.js";
 import warehouseRoute from "./routes/warehouseRoute.js";
 import thingRoute from "./routes/thingRoute.js";
 
-const app = express();
+import dotenv from "dotenv";
+dotenv.config();
 
-app.use(cors({
-    origin: "http://localhost:3000",
-    optionSuccessStatus: 200
-})
-);
+import {clearCache} from './utils/cache.js'
+import {connectToDatabase} from "./utils/database.js";
 
-const checkJwt = auth({
-    audience: 'http://localhost:5555/api/auth0',
-    issuerBaseURL: 'http://dev-8xr6cftsyhw0k2uw.us.auth0.com/',
-});
+const start = () => {
+    const checkJwt = auth({
+        audience: 'warehouse-certificate',
+        issuerBaseURL: 'http://dev-8xr6cftsyhw0k2uw.us.auth0.com/',
+        tokenSigningAlg: 'RS256'
+    });
 
-app.use(express.json());
+    const app = express();
 
-app.use('/api/users', checkJwt, userRoute);
+    app.use(cors({
+            origin: "http://localhost:3000",
+            optionSuccessStatus: 200
+        })
+    );
 
-app.use('/api/warehouses', checkJwt, warehouseRoute);
+    app.use(checkJwt);
 
-app.use('/api/things', checkJwt, thingRoute)
+    app.use(express.json());
 
-app.get("/", (request, response) => {
-    console.log(request);
-    return response.status(234).send("Backend");
-});
+    app.use('/api/users', userRoute);
 
-const startServer = async () => {
-    try {
-        await mongoose.connect(mongoDBURL1,
-            {
-                useNewUrlParser: true,
-                useUnifiedTopology: true
-            });
-        console.log("MongoDB Connesso");
-        app.listen(PORT, HOST, () => {
-            console.log(`App in ascolto all'indirizzo http://${HOST}:${PORT}`);
-        });
-    } catch (error) {
-        console.error("Errore durante la connessione a MongoDB:", error);
-    }
-};
+    app.use('/api/warehouses', warehouseRoute);
 
-startServer();
+    app.use('/api/things', thingRoute)
+
+    const port = process.env.PORT;
+    const host = process.env.HOST;
+    app.listen(port, host, () => {
+        console.log(`App listening at http://${host}:${port}`);
+    });
+}
+
+setInterval(clearCache, 1000*60*60*24);
+connectToDatabase(start);

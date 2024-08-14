@@ -1,24 +1,20 @@
 import express from "express";
 import {
     addWarehouseToList,
-    createUser,
+    addUser,
     deleteWarehouseFromList,
-    searchAllUsers,
-    searchUserById,
     searchUserByNameAndLastName,
-    checkToken
+    getUserBySub,
 } from "../controllers/usersController.js";
+import {deleteUser} from "../controllers/warehouseController.js";
 
 const router = express.Router();
 
 // Route to Create a new User
-router.post('/', createUser);
+router.post('/', addUser);
 
-// Route to Search All Users
-router.get('/', searchAllUsers);
-
-// Route to Check the Auth0 Token
-router.get('/check-token', checkToken);
+// Route to Find a User
+router.post('/sub', getUserBySub);
 
 // Route to Search Users by Name and/or LastName
 router.get('/search', searchUserByNameAndLastName);
@@ -28,8 +24,5 @@ router.post('/add-warehouse', addWarehouseToList);
 
 // Route to Delete a Warehouse to WarehousesList
 router.post('/delete-warehouse', deleteWarehouseFromList);
-
-// Route to Search Users by Id
-router.get('/:id', searchUserById);
 
 export default router;

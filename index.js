@@ -15,7 +15,7 @@ import {connectToDatabase} from "./utils/database.js";
 const start = () => {
     const checkJwt = auth({
         audience: 'warehouse-certificate',
-        issuerBaseURL: 'http://dev-8xr6cftsyhw0k2uw.us.auth0.com/',
+        issuerBaseURL: process.env.ISSUER_BASE_URL,
         tokenSigningAlg: 'RS256'
     });
 
@@ -23,7 +23,7 @@ const start = () => {
 
     app.use(cors({
             origin: "http://localhost:3000",
-            optionSuccessStatus: 200
+            credentials: true
         })
     );
 

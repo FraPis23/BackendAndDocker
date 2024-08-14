@@ -1,85 +1,47 @@
-import { User } from '../models/userModel.js'
+import {userModel} from '../models/userModel.js'
 
-export const createUser = async (request, response) => {
+
+// Add new User
+const getUserForAdd = async (sub) => {
     try {
-        if (
-            !request.body.name ||
-            !request.body.lastName
-        ) {
-            return response.status(400).send("Fornire i campi obbligatori");
-        }
-        const newUser = {
-            name: request.body.name,
-            lastName: request.body.lastName,
-            idAuth0: request.body.idAuth0,
-            lsWarehouses: undefined
-        }
-
-        const user = await User.create(newUser);
-
-        return response.status(201).send(user);
-
-    } catch (error) {
-        console.log(error);
-        return response.status(500).send({error: error.message});
-    }
-};
-
-
-export const searchAllUsers = async (request, response) => {
-    try {
-        const users = await User.find({});
-
-        return response.status(200).send(users)
-
-    } catch (error) {
-        console.log(error.message);
-        response.status(500).send({error: error.message});
-    }
-};
-
-
-export const checkToken = async (request, response) => {
-    try {
-
-        const user = await User.findOne({ idAuth0: request.body.idAuth0 });
-
-        if (user) {
-            response.json({ exists: true });
-        } else {
-            response.json({ exists: false });
-        }
-
-    } catch (error) {
-        console.log(error.message);
-        response.status(500).send({error: error.message});
-    }
-};
-
-
-export const searchUserById = async (request, response) => {
-    try {
-
-        const userId = request.params.id;
-
-        if (!userId) {
-            return response.status(400).send({ error: "Devi fornire un ID per la ricerca" });
-        }
-
-        // Search by _id
-        const user = await User.findById(userId);
-
-        if (!user) {
-            return response.status(404).send({ error: "Utente non trovato" });
-        }
-
-        return response.status(200).send(user);
+        return userModel.findOne({sub: sub});
 
     } catch(error) {
         console.log(error);
-        response.status(500).send({ error: error.message });
     }
 };
+async function add(user) {
+    const newUser = new userModel(user);
+    await newUser.save();
+}
+export const addUser = async (request, response) => {
+    getUserForAdd(request.body.sub).then((exists) => {
+        if (!exists) {
+            try {
+                add(request.body);
+            } catch (error) {
+                console.log(error);
+            }
+
+        }
+        response.status(200).send("Ok");
+    }).catch(error => {
+        console.log(error);
+        response.status(500).send("Internal Server Error");
+    })
+}
+
+// Get User By Sub
+export const getUserBySub = async (request, response) => {
+    try {
+        const sub = request.body.sub;
+        const user = await userModel.findOne({sub: sub});
+        response.status(200).send(user);
+    } catch (error) {
+        console.log(error);
+        response.status(500).send("Internal Server Error");
+    }
+}
 
 
 export const searchUserByNameAndLastName = async (request, response) => {

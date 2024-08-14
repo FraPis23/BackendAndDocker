@@ -1,15 +1,26 @@
 import mongoose from 'mongoose';
 
-const UserSchema = mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
+class User {
+    constructor(picture, email, nickname, sub) {
+        this.picture = picture;
+        this.email = email;
+        this.nickname = nickname;
+        this.sub = sub;
+        this.lsWarehousesId = [];
+    }
+}
+
+const userSchema = new mongoose.Schema({
+    picture: {
+        type: String
     },
-    lastName: {
-        type: String,
-        required: true,
+    email: {
+        type: String
     },
-    idAuth0: {
+    nickname: {
+        type: String
+    },
+    sub: {
         type: String,
         required: true,
         unique: true
@@ -21,4 +32,6 @@ const UserSchema = mongoose.Schema({
     }
 });
 
-export const User = mongoose.model('User', UserSchema);
+const userModel = mongoose.model('User', userSchema);
+
+export {User, userModel, userSchema};

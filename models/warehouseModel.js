@@ -1,8 +1,18 @@
 import mongoose from 'mongoose';
-import {OperationSchema} from "./operatioModel.js";
-import {ThingSchema} from "./thingModel.js";
 
-const WarehouseSchema = mongoose.Schema({
+class Warehouse {
+    constructor(name, description, location, sub) {
+        this.name = name;
+        this.description = description;
+        this.location = location;
+        this.lsThings = [];
+        this.lsAdminsId = [sub];
+        this.lsUsersId = [];
+        this.lsOperations = [];
+    }
+}
+
+const warehouseSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -49,4 +59,6 @@ const WarehouseSchema = mongoose.Schema({
     }
 });
 
-export const Warehouse = mongoose.model('Warehouse', WarehouseSchema);
+const warehouseModel = mongoose.model('Warehouse', warehouseSchema);
+
+export {Warehouse, warehouseModel, warehouseSchema};

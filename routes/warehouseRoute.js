@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-    createWarehouse,
+    addWarehouse,
     deleteWarehouse,
     getWarehoseById,
     createThing,
@@ -67,7 +67,7 @@ router.post('/:id', deleteWarehouse);
 router.get('/:id', getWarehoseById);
 
 // Route to Create a new Warehouses
-router.post('/', createWarehouse);
+router.post('/', addWarehouse);
 
 
 export default router;

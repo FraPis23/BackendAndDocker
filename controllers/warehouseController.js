@@ -1,39 +1,30 @@
-import { Warehouse } from "../models/warehouseModel.js";
+import {Warehouse, warehouseModel} from "../models/warehouseModel.js";
+import { userModel } from "../models/userModel.js";
+import {searchUser} from "./usersController.js";
 import {Thing} from "../models/thingModel.js";
 import {Operation} from "../models/operatioModel.js";
 
-
-export const createWarehouse = async (request, response) => {
-    try{
-        if(
-            !request.body.name
-        ) {
-            return response.status(400).send("Assegnare il nome al magazzino");
-        }
-
-        if(
-            !request.body.userId
-        ){
-            return response.status(400).send("Assegnare userId");
-        }
-        const newWarehouse = {
-            name: request.body.name,
-            description: request.body.description ? request.body.description : undefined,
-            location: request.body.location ? request.body.location : undefined,
-            lsAdminsId: []
-        }
-
-        newWarehouse.lsAdminsId.push(request.body.userId);
-
-        const warehouse = await Warehouse.create(newWarehouse);
-
-        return response.status(201).send(warehouse);
-
+// Add new Warehouse
+async function add(warehouse) {
+    const newWarehouse = new warehouseModel(warehouse);
+    await newWarehouse.save();
+    return newWarehouse;
+}
+export const addWarehouse = async (request, response) => {
+    try {
+        add(request.body)
+            .then((warehouse) => {
+                searchUser(request.body.sub)
+                    .then((user) => {
+                        user.lsWarehousesId.push(warehouse._id);
+                    })
+            })
+        response.status(200).send("Ok");
     } catch (error) {
         console.log(error);
-        response.status(500).send({error: error.message});
+        response.status(500).send("Internal Server Error");
     }
-};
+}
 
 
 export const deleteWarehouse = async (request, response) => {

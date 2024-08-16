@@ -1,21 +1,22 @@
 import {userModel} from '../models/userModel.js'
 
 
-// Add new User
-const getUserForAdd = async (sub) => {
+// Get User by Sub
+export const searchUser = async (sub) => {
     try {
-        return userModel.findOne({sub: sub});
-
+        return await userModel.findOne({sub: sub})
     } catch(error) {
         console.log(error);
     }
 };
+
+// Add new User
 async function add(user) {
     const newUser = new userModel(user);
     await newUser.save();
 }
 export const addUser = async (request, response) => {
-    getUserForAdd(request.body.sub).then((exists) => {
+    searchUser(request.body.sub).then((exists) => {
         if (!exists) {
             try {
                 add(request.body);
@@ -31,12 +32,15 @@ export const addUser = async (request, response) => {
     })
 }
 
-// Get User By Sub
+// Get User By Sub fot http
 export const getUserBySub = async (request, response) => {
     try {
-        const sub = request.body.sub;
-        const user = await userModel.findOne({sub: sub});
-        response.status(200).send(user);
+        const user = await searchUser(request.body.sub);
+        const send = {
+            picture: user.picture,
+            nickname: user.nickname,
+        }
+        response.status(200).send(send);
     } catch (error) {
         console.log(error);
         response.status(500).send("Internal Server Error");
@@ -76,11 +80,7 @@ export const searchUserByNameAndLastName = async (request, response) => {
 
 export const addWarehouseToList = async (request, response) => {
     try {
-
-        const user = await User.findById(request.body.userId);
-        if (!user) {
-            return response.status(404).json({ error: "Utente non trovato" });
-        }
+        const user = getUser(request.sub)
 
         if (user.lsWarehousesId.includes(request.body.warehouseId)) {
             return response.status(400).json({ error: "Il magazzino esiste già" });

@@ -78,23 +78,13 @@ export const searchUserByNameAndLastName = async (request, response) => {
 };
 
 
-export const addWarehouseToList = async (request, response) => {
+export const returnWarehouses = async (request, response) => {
     try {
-        const user = getUser(request.sub)
-
-        if (user.lsWarehousesId.includes(request.body.warehouseId)) {
-            return response.status(400).json({ error: "Il magazzino esiste già" });
-        }
-
-
-        user.lsWarehousesId.push(request.body.warehouseId);
-        await user.save();
-
-        return response.status(201).send({ message: "Magazzino aggiunto con successo", user});
-
+        const user = await searchUser(request.body.sub);
+        response.status(200).send(user.lsWarehousesId);
     } catch (error) {
-        console.log(error);
-        response.status(500).send({ error: error.message });
+        console.error(error);
+        return response.status(500).send({error: error.message});
     }
 };
 

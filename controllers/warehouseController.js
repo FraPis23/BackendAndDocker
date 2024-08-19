@@ -1,4 +1,4 @@
-import {Warehouse, warehouseModel} from "../models/warehouseModel.js";
+import {warehouseModel} from "../models/warehouseModel.js";
 import {searchUser} from "./usersController.js";
 import {Thing} from "../models/thingModel.js";
 import {Operation} from "../models/operatioModel.js";
@@ -304,7 +304,7 @@ export const getWarehoseById = async (request, response) => {
             return response.status(400).send({ error: "Devi fornire un ID per la ricerca" });
         }
 
-        const warehouse = await Warehouse.findById(id);
+        const warehouse = await warehouseModel.findById(id);
 
         if(!warehouse)
         {
@@ -312,6 +312,7 @@ export const getWarehoseById = async (request, response) => {
         }
 
         return response.status(200).send(warehouse);
+
 
 
     } catch(error){

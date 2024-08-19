@@ -1,5 +1,4 @@
 import {Warehouse, warehouseModel} from "../models/warehouseModel.js";
-import { userModel } from "../models/userModel.js";
 import {searchUser} from "./usersController.js";
 import {Thing} from "../models/thingModel.js";
 import {Operation} from "../models/operatioModel.js";
@@ -12,13 +11,29 @@ async function add(warehouse) {
 }
 export const addWarehouse = async (request, response) => {
     try {
-        add(request.body)
-            .then((warehouse) => {
-                searchUser(request.body.sub)
-                    .then((user) => {
-                        user.lsWarehousesId.push(warehouse._id);
-                    })
-            })
+        const warehouse = {
+            name: request.body.name,
+            description: request.body.description,
+            position: request.body.position,
+            lsAdminsId: request.body.lsAdminsId,
+            laUsersId: request.body.laUsersId,
+        }
+        const newWarehouse = add(warehouse);
+
+        const creator = searchUser(request.body.sub)
+        creator.lsWarehousesId.push(newWarehouse._id);
+        await creator.save();
+
+        newWarehouse.lsAdminsId.forEach((adminId) => {
+            const admin = searchUser(adminId);
+            admin.lsWarehousesId.push(newWarehouse._id);
+        })
+
+        newWarehouse.lsUsersId.forEach((userId) => {
+            const user = searchUser(userId);
+            user.lsWarehousesId.push(newWarehouse._id);
+        })
+
         response.status(200).send("Ok");
     } catch (error) {
         console.log(error);

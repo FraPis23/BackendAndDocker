@@ -48,7 +48,7 @@ export const getUserBySub = async (request, response) => {
 }
 
 // Get Id of all Wharehouses of the User
-export const returnWarehouses = async (request, response) => {
+export const getWarehousesId = async (request, response) => {
     try {
         const user = await searchUser(request.body.sub);
         response.status(200).send(user.lsWarehousesId);

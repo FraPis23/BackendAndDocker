@@ -4,7 +4,7 @@ import {
     deleteWarehouseFromList,
     searchUserByNameAndLastName,
     getUserBySub,
-    returnWarehouses,
+    getWarehousesId,
 } from "../controllers/usersController.js";
 
 const router = express.Router();
@@ -19,7 +19,7 @@ router.post('/sub', getUserBySub);
 router.get('/search', searchUserByNameAndLastName);
 
 // Route to Return Warehouses Id
-router.post('/returnWarehouse', returnWarehouses)
+router.post('/returnWarehouses', getWarehousesId)
 
 // Route to Delete a Warehouse to WarehousesList
 router.post('/delete-warehouse', deleteWarehouseFromList);

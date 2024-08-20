@@ -1,6 +1,6 @@
 import {userModel} from '../models/userModel.js'
 
-
+//IN USO
 // Get User by Sub
 export const searchUser = async (sub) => {
     try {
@@ -47,7 +47,19 @@ export const getUserBySub = async (request, response) => {
     }
 }
 
+// Get Id of all Wharehouses of the User
+export const returnWarehouses = async (request, response) => {
+    try {
+        const user = await searchUser(request.body.sub);
+        response.status(200).send(user.lsWarehousesId);
+    } catch (error) {
+        console.error(error);
+        return response.status(500).send({error: error.message});
+    }
+};
 
+
+//DA TESTARE
 export const searchUserByNameAndLastName = async (request, response) => {
     try {
 
@@ -74,17 +86,6 @@ export const searchUserByNameAndLastName = async (request, response) => {
     } catch (error) {
         console.error(error); // Usa console.error per loggare gli errori
         return response.status(500).send({ error: error.message });
-    }
-};
-
-
-export const returnWarehouses = async (request, response) => {
-    try {
-        const user = await searchUser(request.body.sub);
-        response.status(200).send(user.lsWarehousesId);
-    } catch (error) {
-        console.error(error);
-        return response.status(500).send({error: error.message});
     }
 };
 

@@ -3,6 +3,7 @@ import {searchUser} from "./usersController.js";
 import {Thing} from "../models/thingModel.js";
 import {Operation} from "../models/operatioModel.js";
 
+//IN USO
 // Add new Warehouse
 async function add(warehouse) {
     const newWarehouse = new warehouseModel(warehouse);
@@ -42,6 +43,28 @@ export const addWarehouse = async (request, response) => {
 }
 
 
+export const getWarehoseById = async (request, response) => {
+    try {
+
+        const {id} = request.params;
+
+        const warehouse = await warehouseModel.findById(id);
+
+        if(!warehouse)
+        {
+            return response.status(404).send({ error: "Non ci sono magazzini associati al tuo account" });
+        }
+
+        return response.status(200).send(warehouse);
+
+    } catch(error){
+        console.log(error);
+        response.status(500).send({error: error.message})
+    }
+};
+
+
+// DA TESTARE
 export const deleteWarehouse = async (request, response) => {
     try {
         const { id } = request.params;
@@ -291,33 +314,6 @@ export const deleteAdmin = async (request, response) => {
     } catch (error) {
         console.log(error);
         return response.status(500).send({ error: error.message });
-    }
-};
-
-
-export const getWarehoseById = async (request, response) => {
-    try {
-
-        const {id} = request.params;
-
-        if (!id) {
-            return response.status(400).send({ error: "Devi fornire un ID per la ricerca" });
-        }
-
-        const warehouse = await warehouseModel.findById(id);
-
-        if(!warehouse)
-        {
-            return response.status(404).send({ error: "Non ci sono magazzini associati al tuo account" });
-        }
-
-        return response.status(200).send(warehouse);
-
-
-
-    } catch(error){
-        console.log(error);
-        response.status(500).send({error: error.message})
     }
 };
 

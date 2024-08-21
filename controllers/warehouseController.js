@@ -16,7 +16,7 @@ export const addWarehouse = async (request, response) => {
         const warehouse = {
             name: request.body.name,
             description: request.body.description,
-            position: request.body.position,
+            location: request.body.location,
             lsAdminsId: request.body.lsAdminsId,
             laUsersId: request.body.laUsersId,
         }

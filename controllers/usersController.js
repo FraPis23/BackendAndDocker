@@ -37,6 +37,7 @@ export const getUserBySub = async (request, response) => {
     try {
         const user = await searchUser(request.body.sub);
         const send = {
+            sub: user.sub,
             picture: user.picture,
             nickname: user.nickname,
         }

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 class Warehouse {
-    constructor(name, description, location, sub) {
+    constructor(name, description, location, sub, icon) {
         this.name = name;
         this.description = description;
         this.location = location;
@@ -9,6 +9,7 @@ class Warehouse {
         this.lsAdminsId = [sub];
         this.lsUsersId = [];
         this.lsOperations = [];
+        this.icon = icon;
     }
 }
 
@@ -56,6 +57,10 @@ const warehouseSchema = new mongoose.Schema({
         }],
         required: true,
         default: []
+    },
+    icon: {
+        type: Number,
+        required: true
     }
 });
 

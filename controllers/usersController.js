@@ -63,10 +63,10 @@ export const getWarehousesId = async (request, response) => {
 //DA TESTARE
 export const searchUserByNickname = async (request, response) => {
     try {
+        const text = request.query.text;
+        let filter =  { nickname: new RegExp(text, 'i') };
 
-        let filter =  new RegExp(request.query.text, 'i');
-
-        const users = await userModel.find(filter);
+        const users = await userModel.find(filter).limit(10);
 
         const usersNicknames = [];
 

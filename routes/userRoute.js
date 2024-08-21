@@ -16,7 +16,7 @@ router.post('/', addUser);
 router.post('/sub', getUserBySub);
 
 // Route to Search Users by Name and/or LastName
-router.get('/search', searchUserByNickname);
+router.post('/search', searchUserByNickname);
 
 // Route to Return Warehouses Id
 router.post('/returnWarehouses', getWarehousesId)

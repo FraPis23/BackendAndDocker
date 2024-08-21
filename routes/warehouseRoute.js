@@ -1,8 +1,8 @@
 import express from 'express';
 import {
     addWarehouse,
-    deleteWarehouse,
     getWarehoseById,
+    /*deleteWarehouse,
     createThing,
     deleteThing,
     createOperation,
@@ -15,12 +15,12 @@ import {
     deleteOperations,
     getUsers,
     getAdmins,
-    getOperations
+    getOperations*/
 } from "../controllers/warehouseController.js";
 
 
 const router = express.Router();
-
+/*
 // Route to Create a new Things
 router.post('/new-thing', createThing)
 
@@ -62,7 +62,7 @@ router.get('/get-operation', getOperations);
 
 // Route to Delete a Warehouse by Id
 router.post('/:id', deleteWarehouse);
-
+*/
 // Route to Search All Warehouses
 router.get('/:id', getWarehoseById);
 

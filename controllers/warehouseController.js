@@ -71,6 +71,7 @@ export const getWarehoseById = async (request, response) => {
 
 
 // DA TESTARE
+/*
 export const deleteWarehouse = async (request, response) => {
     try {
         const { id } = request.params;
@@ -341,7 +342,7 @@ export const getThings = async (request, response) => {
         }
         const lsThings = warehouse.lsThings();
         return response.status(200).send(lsThings);
-        
+
 
     }catch (error) {
         console.log(error);
@@ -454,3 +455,4 @@ export const getOperations = async (request, response) => {
         return response.status(500).send({error: error.message});
     }
 };
+*/

@@ -12,6 +12,7 @@ async function add(warehouse) {
 }
 export const addWarehouse = async (request, response) => {
     try {
+
         const warehouse = {
             name: request.body.name,
             description: request.body.description,
@@ -21,7 +22,8 @@ export const addWarehouse = async (request, response) => {
         }
         const newWarehouse = add(warehouse);
 
-        const creator = searchUser(request.body.sub)
+        const creator = await searchUser(request.body.sub)
+        console.log("creator", creator)
         creator.lsWarehousesId.push(newWarehouse._id);
         await creator.save();
 

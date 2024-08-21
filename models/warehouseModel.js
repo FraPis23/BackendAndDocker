@@ -60,7 +60,7 @@ const warehouseSchema = new mongoose.Schema({
     },
     icon: {
         type: Number,
-        required: true
+        required: false
     }
 });
 

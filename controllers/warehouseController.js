@@ -20,16 +20,20 @@ export const addWarehouse = async (request, response) => {
             lsAdminsId: request.body.lsAdminsId,
             laUsersId: request.body.laUsersId,
         }
-        const newWarehouse = add(warehouse);
+        const newWarehouse = await add(warehouse);
 
         const creator = await searchUser(request.body.sub)
-        console.log("creator", creator)
-        creator.lsWarehousesId.push(newWarehouse._id);
-        await creator.save();
 
-        newWarehouse.lsAdminsId.forEach((adminId) => {
-            const admin = searchUser(adminId);
-            admin.lsWarehousesId.push(newWarehouse._id);
+        newWarehouse.lsAdminsId.push(creator.sub);
+        await newWarehouse.save();
+
+        newWarehouse.lsAdminsId.forEach( (adminId) => {
+            searchUser(adminId).then(async (admin ) => {
+                console.log("admin", admin);
+                admin.lsWarehousesId.push(newWarehouse._id);
+                await admin.save();
+            })
+
         })
 
         newWarehouse.lsUsersId.forEach((userId) => {

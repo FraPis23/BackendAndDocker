@@ -10,6 +10,16 @@ export const searchUser = async (sub) => {
     }
 };
 
+// Convert a Nickname into Sub
+export const getSubByNickname = async (nickname) => {
+    try {
+        const user = await userModel.findOne(nickname);
+        return user.sub
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 // Add new User
 async function add(user) {
     const newUser = new userModel(user);
@@ -59,8 +69,7 @@ export const getWarehousesId = async (request, response) => {
     }
 };
 
-
-//DA TESTARE
+// Search Users By Nickname
 export const searchUserByNickname = async (request, response) => {
     try {
         const text = request.query.text;
@@ -82,7 +91,7 @@ export const searchUserByNickname = async (request, response) => {
     }
 };
 
-
+//DA TESTARE
 export const deleteWarehouseFromList = async (request, response) => {
     try {
 

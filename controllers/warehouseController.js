@@ -1,5 +1,5 @@
 import {warehouseModel} from "../models/warehouseModel.js";
-import {searchUser} from "./usersController.js";
+import {searchUser, getSubByNickname} from "./usersController.js";
 import {Thing} from "../models/thingModel.js";
 import {Operation} from "../models/operatioModel.js";
 
@@ -12,20 +12,34 @@ async function add(warehouse) {
 }
 export const addWarehouse = async (request, response) => {
     try {
+        const lsAdminsId = [];
+        const lsUsersId = [];
+
+        lsAdminsId.push(request.body.sub);
+
+        request.body.lsAdminsNickname.forEach((nickname) => {
+            getSubByNickname(nickname)
+                .then((sub) => {
+                    lsAdminsId.push(sub);
+                })
+        });
+
+        request.body.lsUsersNickname.forEach((nickname) => {
+            getSubByNickname(nickname)
+                .then((sub) => {
+                    lsUsersId.push(sub)
+                })
+        })
 
         const warehouse = {
             name: request.body.name,
             description: request.body.description,
-            location: request.body.location,
-            lsAdminsId: request.body.lsAdminsId,
-            laUsersId: request.body.laUsersId,
+            coordinates: request.body.coordinates,
+            lsAdminsId: lsAdminsId,
+            laUsersId: lsUsersId,
+            icon: request.body.icon
         }
         const newWarehouse = await add(warehouse);
-
-        const creator = await searchUser(request.body.sub)
-
-        newWarehouse.lsAdminsId.push(creator.sub);
-        await newWarehouse.save();
 
         newWarehouse.lsAdminsId.forEach( (adminId) => {
             searchUser(adminId).then(async (admin ) => {
@@ -42,6 +56,7 @@ export const addWarehouse = async (request, response) => {
         })
 
         response.status(200).send("Ok");
+
     } catch (error) {
         console.log(error);
         response.status(500).send("Internal Server Error");

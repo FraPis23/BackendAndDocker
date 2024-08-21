@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
 
 class Warehouse {
-    constructor(name, description, location, sub, icon) {
+    constructor(name, description, coordinates, lsAdminsId, lsUSersId, icon) {
         this.name = name;
         this.description = description;
-        this.location = location;
+        this.coordinates = coordinates;
         this.lsThings = [];
-        this.lsAdminsId = [sub];
-        this.lsUsersId = [];
+        this.lsAdminsId = lsAdminsId;
+        this.lsUsersId = lsUSersId;
         this.lsOperations = [];
         this.icon = icon;
     }
@@ -22,16 +22,9 @@ const warehouseSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    location: {
-        type: {
-            type: String,
-            enum: ['Point'],
-            default: 'Point'
-        },
-        coordinates: {
-            type: [Number],
-            default: []
-        }
+    coordinates: {
+        type: [Number],
+        default: []
     },
     lsThings: {
         type: [{

@@ -61,28 +61,20 @@ export const getWarehousesId = async (request, response) => {
 
 
 //DA TESTARE
-export const searchUserByNameAndLastName = async (request, response) => {
+export const searchUserByNickname = async (request, response) => {
     try {
 
-        if (!request.query.name && !request.query.lastName) {
-            return response.status(400).send({ error: "Fornire un nome e/o un cognome" });
-        }
+        let filter =  new RegExp(request.query.text, 'i');
 
-        let filter = {};
-        if (request.query.name) {
-            filter.name = new RegExp(request.query.name, 'i');
-        }
-        if (request.query.lastName) {
-            filter.lastName = new RegExp(request.query.lastName, 'i');
-        }
+        const users = await userModel.find(filter);
 
-        const users = await User.find(filter);
+        const usersNicknames = [];
 
-        if (users.length === 0) {
-            return response.status(404).send({ error: "Utente non trovato" });
-        }
+        users.forEach((user) => {
+            usersNicknames.push(user.nickname);
+        })
 
-        return response.status(200).send(users);
+        return response.status(200).send(usersNicknames);
 
     } catch (error) {
         console.error(error); // Usa console.error per loggare gli errori

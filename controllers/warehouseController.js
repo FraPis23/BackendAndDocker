@@ -2,6 +2,7 @@ import {warehouseModel} from "../models/warehouseModel.js";
 import {searchUser, getSubByNickname} from "./usersController.js";
 import {Thing} from "../models/thingModel.js";
 import {Operation} from "../models/operatioModel.js";
+import {response} from "express";
 
 //IN USO
 // Add new Warehouse
@@ -10,33 +11,43 @@ async function add(warehouse) {
     await newWarehouse.save();
     return newWarehouse;
 }
+async function prepareLists(lsAdminsNickname, lsUsersNickname) {
+    const lsAdminsId = [];
+    const lsUsersId = [];
+
+    let uniqueAdminsNickname = [...new Set(lsAdminsNickname)];
+    const uniqueUsersNickname = [...new Set(lsUsersNickname)];
+
+    uniqueAdminsNickname = uniqueAdminsNickname.filter(nickname => !uniqueUsersNickname.includes(nickname));
+
+    const adminsPromises = uniqueAdminsNickname.map(async (nickname) => {
+        const sub = await getSubByNickname(nickname);
+        if (sub)
+            lsAdminsId.push(sub);
+    });
+
+    const usersPromises = uniqueUsersNickname.map(async (nickname) => {
+        const sub = await getSubByNickname(nickname);
+        if (sub)
+            lsUsersId.push(sub);
+    });
+
+    await Promise.all([...adminsPromises, ...usersPromises]);
+
+    return {
+        lsAdminsId: lsAdminsId,
+        lsUsersId: lsUsersId
+    }
+
+}
 export const addWarehouse = async (request, response) => {
     try {
-        const lsAdminsId = [];
-        const lsUsersId = [];
+        const lists = await prepareLists(request.body.lsAdminsNickname, request.body.lsAUsersNickname)
+        console.log("lista:", response)
+        const lsAdminsId = lists.lsAdminsId;
+        const lsUsersId = lists.lsUsersId;
 
-        lsAdminsId.push(request.body.sub);
-
-        const uniqueAdminsNickname = [...new Set(request.body.lsAdminsNickname)];
-        const uniqueUsersNickname = [...new Set(request.body.lsUsersNickname)];
-
-        const adminsPromises = uniqueAdminsNickname.map(async (nickname) => {
-            const sub = await getSubByNickname(nickname);
-            console.log('sub', sub);
-            if (sub)
-                lsAdminsId.push(sub);
-        });
-
-        const usersPromises = uniqueUsersNickname.map(async (nickname) => {
-            const sub = await getSubByNickname(nickname);
-            console.log(sub);
-            if (sub)
-                lsUsersId.push(sub);
-        });
-
-        await Promise.all([...adminsPromises, ...usersPromises]);
-
-        console.log("utenti", lsUsersId)
+        lsAdminsId.unshift(request.body.sub);
 
         const warehouse = {
             name: request.body.name,

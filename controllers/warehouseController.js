@@ -17,19 +17,18 @@ export const addWarehouse = async (request, response) => {
 
         lsAdminsId.push(request.body.sub);
 
-        request.body.lsAdminsNickname.forEach((nickname) => {
-            getSubByNickname(nickname)
-                .then((sub) => {
-                    lsAdminsId.push(sub);
-                })
+        const adminsPromises = request.body.lsAdminsNickname.map(async (nickname) => {
+            const sub = await getSubByNickname(nickname);
+            console.log(sub);
+            lsAdminsId.push(sub);
         });
 
-        request.body.lsUsersNickname.forEach((nickname) => {
-            getSubByNickname(nickname)
-                .then((sub) => {
-                    lsUsersId.push(sub)
-                })
-        })
+        const usersPromises = request.body.lsUsersNickname.map(async (nickname) => {
+            const sub = await getSubByNickname(nickname);
+            lsUsersId.push(sub);
+        });
+
+        await Promise.all([...adminsPromises, ...usersPromises]);
 
         const warehouse = {
             name: request.body.name,
@@ -41,9 +40,9 @@ export const addWarehouse = async (request, response) => {
         }
         const newWarehouse = await add(warehouse);
 
+
         newWarehouse.lsAdminsId.forEach( (adminId) => {
             searchUser(adminId).then(async (admin ) => {
-                console.log("admin", admin);
                 admin.lsWarehousesId.push(newWarehouse._id);
                 await admin.save();
             })

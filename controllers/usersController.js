@@ -13,7 +13,7 @@ export const searchUser = async (sub) => {
 // Convert a Nickname into Sub
 export const getSubByNickname = async (nickname) => {
     try {
-        const user = await userModel.findOne(nickname);
+        const user = await userModel.findOne({nickname: nickname});
         return user.sub
     } catch (error) {
         console.log(error);

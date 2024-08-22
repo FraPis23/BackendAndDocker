@@ -19,25 +19,29 @@ export const addWarehouse = async (request, response) => {
 
         const adminsPromises = request.body.lsAdminsNickname.map(async (nickname) => {
             const sub = await getSubByNickname(nickname);
-            console.log(sub);
             lsAdminsId.push(sub);
         });
 
         const usersPromises = request.body.lsUsersNickname.map(async (nickname) => {
             const sub = await getSubByNickname(nickname);
+            console.log(sub);
             lsUsersId.push(sub);
         });
 
         await Promise.all([...adminsPromises, ...usersPromises]);
+
+        console.log("utenti", lsUsersId)
 
         const warehouse = {
             name: request.body.name,
             description: request.body.description,
             coordinates: request.body.coordinates,
             lsAdminsId: lsAdminsId,
-            laUsersId: lsUsersId,
+            lsUsersId: lsUsersId,
             icon: request.body.icon
         }
+
+        console.log("magazzino",warehouse)
         const newWarehouse = await add(warehouse);
 
 
@@ -50,8 +54,10 @@ export const addWarehouse = async (request, response) => {
         })
 
         newWarehouse.lsUsersId.forEach((userId) => {
-            const user = searchUser(userId);
-            user.lsWarehousesId.push(newWarehouse._id);
+            searchUser(userId).then(async (user) => {
+                user.lsWarehousesId.push(newWarehouse._id);
+                await user.save();
+            })
         })
 
         response.status(200).send("Ok");

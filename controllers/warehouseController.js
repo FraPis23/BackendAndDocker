@@ -31,6 +31,9 @@ export const addWarehouse = async (request, response) => {
             lsUsersId.push(sub);
         });
 
+        const validAdminsId = request.body.lsAdminsId.filter(id => typeof id === 'string');
+        const validUsersId = request.body.lsUsersId.filter(id => typeof id === 'string');
+
         await Promise.all([...adminsPromises, ...usersPromises]);
 
         console.log("utenti", lsUsersId)

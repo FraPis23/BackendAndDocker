@@ -17,12 +17,15 @@ export const addWarehouse = async (request, response) => {
 
         lsAdminsId.push(request.body.sub);
 
-        const adminsPromises = request.body.lsAdminsNickname.map(async (nickname) => {
+        const uniqueAdminsNickname = [...new Set(request.body.lsAdminsNickname)];
+        const uniqueUsersNickname = [...new Set(request.body.lsUsersNickname)];
+
+        const adminsPromises = uniqueAdminsNickname.map(async (nickname) => {
             const sub = await getSubByNickname(nickname);
             lsAdminsId.push(sub);
         });
 
-        const usersPromises = request.body.lsUsersNickname.map(async (nickname) => {
+        const usersPromises = uniqueUsersNickname.map(async (nickname) => {
             const sub = await getSubByNickname(nickname);
             console.log(sub);
             lsUsersId.push(sub);

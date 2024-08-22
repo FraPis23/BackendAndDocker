@@ -72,16 +72,17 @@ export const getWarehousesId = async (request, response) => {
 // Search Users By Nickname
 export const searchUserByNickname = async (request, response) => {
     try {
+        const userBlocked = await searchUser(request.body.sub);
+        const nicknameBlocked = userBlocked.nickname;
+
         const text = request.query.text;
         let filter =  { nickname: new RegExp(text, 'i') };
 
-        const users = await userModel.find(filter).limit(10);
+        let users = await userModel.find(filter).limit(10);
 
-        const usersNicknames = [];
+        users = users.filter(user => user.nickname !== nicknameBlocked);
 
-        users.forEach((user) => {
-            usersNicknames.push(user.nickname);
-        })
+        const usersNicknames = users.map(user => user.nickname);
 
         return response.status(200).send(usersNicknames);
 

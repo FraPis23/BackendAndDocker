@@ -22,17 +22,17 @@ export const addWarehouse = async (request, response) => {
 
         const adminsPromises = uniqueAdminsNickname.map(async (nickname) => {
             const sub = await getSubByNickname(nickname);
-            lsAdminsId.push(sub);
+            console.log('sub', sub);
+            if (sub)
+                lsAdminsId.push(sub);
         });
 
         const usersPromises = uniqueUsersNickname.map(async (nickname) => {
             const sub = await getSubByNickname(nickname);
             console.log(sub);
-            lsUsersId.push(sub);
+            if (sub)
+                lsUsersId.push(sub);
         });
-
-        const validAdminsId = request.body.lsAdminsId.filter(id => typeof id === 'string');
-        const validUsersId = request.body.lsUsersId.filter(id => typeof id === 'string');
 
         await Promise.all([...adminsPromises, ...usersPromises]);
 

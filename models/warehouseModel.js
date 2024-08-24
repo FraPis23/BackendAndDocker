@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
 
 class Warehouse {
-    constructor(name, description, coordinates, lsAdminsId, lsUSersId, icon) {
+    constructor(name, description, coordinates, lsAdminsId, lsUsersId, icon) {
         this.name = name;
         this.description = description;
         this.coordinates = coordinates;
         this.lsThings = [];
         this.lsAdminsId = lsAdminsId;
-        this.lsUsersId = lsUSersId;
+        this.lsUsersId = lsUsersId;
         this.lsOperations = [];
         this.icon = icon;
     }

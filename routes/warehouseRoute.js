@@ -2,8 +2,8 @@ import express from 'express';
 import {
     addWarehouse,
     getWarehoseById,
-    /*deleteWarehouse,
-    createThing,
+    deleteWarehouse,
+    /*createThing,
     deleteThing,
     createOperation,
     addUser,
@@ -20,12 +20,23 @@ import {
 
 
 const router = express.Router();
-/*
-// Route to Create a new Things
-router.post('/new-thing', createThing)
 
+// Route to Delete a Warehouse by Id
+router.post('/:id', deleteWarehouse);
+
+// Route to Search All Warehouses
+router.get('/:id', getWarehoseById);
+
+// Route to Create a new Warehouses
+router.post('/', addWarehouse);
+
+
+/*
 // Route to Delete a Thing from the Warehouses
 router.post('/delete-thing', deleteThing);
+
+// Route to Create a new Things
+router.post('/new-thing', createThing)
 
 // Route to create a new operations
 router.post('/create-operation', createOperation);
@@ -59,15 +70,8 @@ router.get('/get-admin', getAdmins);
 
 // Route to get a new operations
 router.get('/get-operation', getOperations);
-
-// Route to Delete a Warehouse by Id
-router.post('/:id', deleteWarehouse);
 */
-// Route to Search All Warehouses
-router.get('/:id', getWarehoseById);
 
-// Route to Create a new Warehouses
-router.post('/', addWarehouse);
 
 
 export default router;

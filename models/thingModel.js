@@ -1,21 +1,31 @@
 import mongoose from 'mongoose'
 
-const ThingSchema = mongoose.Schema({
+class Thing {
+    constructor(name, quantity, minQuantity, picture) {
+        this.name = name;
+        this.quantity = quantity;
+        this.minQuantity = minQuantity;
+        this.picture = picture;
+    }
+}
+
+const thingSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
     },
     quantity: {
         type: Number,
-        required: true,
         default: 0
     },
     minQuantity: {
         type: Number,
-        required: true,
         default: 0
+    },
+    picture: {
+        type: String,
     }
 });
 
-export const Thing = mongoose.model('Thing', ThingSchema);
-export { ThingSchema }
+const thingModel = mongoose.model('Thing', thingSchema);
+export {Thing, thingModel, thingSchema};

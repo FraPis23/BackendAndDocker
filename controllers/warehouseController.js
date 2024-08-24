@@ -1,6 +1,6 @@
 import {warehouseModel} from "../models/warehouseModel.js";
 import {searchUser, getSubByNickname} from "./usersController.js";
-import {Thing} from "../models/thingModel.js";
+import {thingModel} from "../models/thingModel.js";
 import {Operation} from "../models/operatioModel.js";
 import {response} from "express";
 
@@ -85,18 +85,13 @@ export const addWarehouse = async (request, response) => {
     }
 }
 
-
+// Get Warehouse By Id
 export const getWarehoseById = async (request, response) => {
     try {
 
         const {id} = request.params;
 
-        const warehouse = await warehouseModel.findById(id);
-
-        if(!warehouse)
-        {
-            return response.status(404).send({ error: "Non ci sono magazzini associati al tuo account" });
-        }
+        const warehouse = await warehouseModel.findById(id).populate('lsThings').populate('lsOperations');
 
         return response.status(200).send(warehouse);
 
@@ -107,21 +102,38 @@ export const getWarehoseById = async (request, response) => {
 };
 
 
-// DA TESTARE
-/*
+// Delete Warehouse
+async function clearUserList(warehouseId, warehouseList) {
+    const userPromises = warehouseList.map(async (sub) => {
+        const user = await searchUser(sub);
+        user.lsWarehousesId = user.lsWarehousesId.filter((userWarehouseId) => userWarehouseId !== warehouseId);
+        await user.save();
+    })
+}
+async function clearThings(lsThingsId) {
+    const thingPromises = lsThingsId.map(async (thingId) => {
+        await thingModel.findByIdAndDelete(thingId);
+    })
+
+    await Promise.all(thingPromises);
+}
+async function clearOperations(lsOperationsId) {
+    const operationsPromises = lsOperationsId.map(async (operationsId) => {
+        await thingModel.findByIdAndDelete(operationsId);
+    })
+
+    await Promise.all(operationsPromises);
+}
 export const deleteWarehouse = async (request, response) => {
     try {
         const { id } = request.params;
 
-        if (!id) {
-            return response.status(400).send({ error: "ID del magazzino non fornito" });
-        }
+        const warehouse = await warehouseModel.findByIdAndDelete(id);
 
-        const warehouse = await Warehouse.findByIdAndDelete(id);
-
-        if (!warehouse) {
-            return response.status(404).send({ error: "Magazzino non trovato" });
-        }
+        await clearUserList(id, warehouse.lsAdminsList);
+        await clearUserList(id, warehouse.lsUsersList);
+        await clearThings(warehouse.lsThings);
+        await clearOperations(warehouse.lsOperations)
 
         return response.status(200).send({ message: "Magazzino eliminato con successo" });
 
@@ -131,7 +143,9 @@ export const deleteWarehouse = async (request, response) => {
     }
 };
 
+// DA TESTARE
 
+/*
 export const createThing = async (request, response) => {
 
     try{

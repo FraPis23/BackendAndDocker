@@ -24,6 +24,8 @@ const thingSchema = new mongoose.Schema({
     },
     picture: {
         type: String,
+        default: ""
+
     }
 });
 

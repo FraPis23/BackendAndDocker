@@ -3,7 +3,8 @@ import {
     addWarehouse,
     getWarehoseById,
     deleteWarehouse,
-    /*createThing,
+    createThing,
+    /*
     deleteThing,
     createOperation,
     addUser,
@@ -21,6 +22,9 @@ import {
 
 const router = express.Router();
 
+// Route to Create a new Things
+router.post('/create-thing', createThing)
+
 // Route to Delete a Warehouse by Id
 router.post('/:id', deleteWarehouse);
 
@@ -30,13 +34,9 @@ router.get('/:id', getWarehoseById);
 // Route to Create a new Warehouses
 router.post('/', addWarehouse);
 
-
 /*
 // Route to Delete a Thing from the Warehouses
 router.post('/delete-thing', deleteThing);
-
-// Route to Create a new Things
-router.post('/new-thing', createThing)
 
 // Route to create a new operations
 router.post('/create-operation', createOperation);

@@ -102,6 +102,8 @@ export const getWarehoseById = async (request, response) => {
 };
 
 
+// DA TESTARE
+
 // Delete Warehouse
 async function clearUserList(warehouseId, warehouseList) {
     const userPromises = warehouseList.map(async (sub) => {
@@ -143,29 +145,24 @@ export const deleteWarehouse = async (request, response) => {
     }
 };
 
-// DA TESTARE
-
-/*
+// Create e new Thing in the Warehouse
 export const createThing = async (request, response) => {
-
     try{
 
-        if (!request.body.thingId || !request.body.warehouseId) {
-            return response.send(400).message("Mancano i riferimenti necessari per l'assegnazione");
+        const warehouse = await warehouseModel.findById(request.body.warehouseId);
+
+        const thing = {
+            name: request.body.name,
+            quantity: request.body.quantity,
+            minQuantity: request.body.minQuantity,
+            picture: request.body.picture
         }
 
-        const warehouse = await Warehouse.findById(request.body.warehouseId);
+        const newThing = new thingModel(thing);
+        await newThing.save();
 
-
-
-        if(warehouse.lsThings.includes(request.body.thingId))
-        {
-            return response.status(401).send("Oggetto già presente ");
-        }
-
-        const thing = await Thing.findById(request.body.thingId);
         warehouse.lsThings.push(thing);
-        warehouse.save();
+        await warehouse.save();
 
         return response.status(201).send({message:"Oggetto aggiunto con successo", thing, warehouse});
 
@@ -175,6 +172,7 @@ export const createThing = async (request, response) => {
     }
 };
 
+/*
 
 export const deleteThing = async (request, response) => {
     try {

@@ -1,8 +1,7 @@
 import {warehouseModel} from "../models/warehouseModel.js";
 import {searchUser, getSubByNickname} from "./usersController.js";
 import {thingModel} from "../models/thingModel.js";
-import {Operation} from "../models/operatioModel.js";
-import {response} from "express";
+import {operationModel} from "../models/operatioModel.js";
 
 //IN USO
 // Add new Warehouse
@@ -42,7 +41,7 @@ async function prepareLists(lsAdminsNickname, lsUsersNickname) {
 }
 export const addWarehouse = async (request, response) => {
     try {
-        const lists = await prepareLists(request.body.lsAdminsNickname, request.body.lsAUsersNickname)
+        const lists = await prepareLists(request.body.lsAdminsNickname, request.body.lsUsersNickname)
         console.log("lista:", response)
         const lsAdminsId = lists.lsAdminsId;
         const lsUsersId = lists.lsUsersId;
@@ -106,25 +105,32 @@ export const getWarehoseById = async (request, response) => {
 
 // Delete Warehouse
 async function clearUserList(warehouseId, warehouseList) {
+    console.log(warehouseList)
     const userPromises = warehouseList.map(async (sub) => {
         const user = await searchUser(sub);
         user.lsWarehousesId = user.lsWarehousesId.filter((userWarehouseId) => userWarehouseId !== warehouseId);
         await user.save();
     })
+
+    await Promise.all([...userPromises]);
 }
 async function clearThings(lsThingsId) {
-    const thingPromises = lsThingsId.map(async (thingId) => {
-        await thingModel.findByIdAndDelete(thingId);
-    })
+    if (lsThingsId) {
+        const thingPromises = lsThingsId.map(async (thingId) => {
+            await thingModel.findByIdAndDelete(thingId);
+        })
 
-    await Promise.all(thingPromises);
+        await Promise.all(thingPromises);
+    }
 }
 async function clearOperations(lsOperationsId) {
-    const operationsPromises = lsOperationsId.map(async (operationsId) => {
-        await thingModel.findByIdAndDelete(operationsId);
-    })
+    if (lsOperationsId) {
+        const operationsPromises = lsOperationsId.map(async (operationsId) => {
+            await operationsModel.findByIdAndDelete(operationsId);
+        })
 
-    await Promise.all(operationsPromises);
+        await Promise.all(operationsPromises);
+    }
 }
 export const deleteWarehouse = async (request, response) => {
     try {
@@ -132,8 +138,10 @@ export const deleteWarehouse = async (request, response) => {
 
         const warehouse = await warehouseModel.findByIdAndDelete(id);
 
-        await clearUserList(id, warehouse.lsAdminsList);
-        await clearUserList(id, warehouse.lsUsersList);
+        console.log("magazzini", warehouse);
+        console.log("amministratori" ,warehouse.lsAdminsId)
+        await clearUserList(id, warehouse.lsAdminsId);
+        await clearUserList(id, warehouse.lsUsersId);
         await clearThings(warehouse.lsThings);
         await clearOperations(warehouse.lsOperations)
 

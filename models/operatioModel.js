@@ -1,25 +1,34 @@
 import mongoose from 'mongoose'
 
-const OperationSchema = mongoose.Schema(
+class Operation {
+    constructor(date, thingName, quantity, userSub) {
+        this.name = name;
+        this.thingName = thingName;
+        this.quantity = quantity;
+        this.userSub = userSub;
+    }
+}
+
+const operationSchema = new mongoose.Schema(
     {
         date:{
             type: Date,
             required:true
         },
-        lsThingsName: {
-            type: [String],
+        thingName: {
+            type: String,
             required: true,
         },
-        lsQuantity: {
-          type: [Number],
+        quantity: {
+          type: Number,
           required: true,
         },
-        userId: {
+        userSub: {
             type: String,
             required: true,
         }
     }
 );
 
-export const Operation = mongoose.model('Operation', OperationSchema);
-export { OperationSchema };
+const operationModel = mongoose.model('Operation', operationSchema);
+export {Operation, operationModel, operationSchema};

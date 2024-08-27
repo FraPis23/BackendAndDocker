@@ -76,7 +76,7 @@ export const addWarehouse = async (request, response) => {
             })
         })
 
-        response.status(200).send("Ok");
+        response.status(200).send(warehouse);
 
     } catch (error) {
         console.log(error);

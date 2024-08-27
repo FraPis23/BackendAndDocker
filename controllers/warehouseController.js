@@ -82,7 +82,7 @@ export const addWarehouse = async (request, response) => {
         console.log(error);
         response.status(500).send("Internal Server Error");
     }
-}
+};
 
 // Get Warehouse By Id
 export const getWarehoseById = async (request, response) => {

@@ -4,6 +4,7 @@ import {
     getWarehoseById,
     deleteWarehouse,
     createThing,
+    getUsers,
     /*
     deleteThing,
     createOperation,
@@ -14,13 +15,19 @@ import {
     getThings,
     getThingByName,
     deleteOperations,
-    getUsers,
     getAdmins,
     getOperations*/
 } from "../controllers/warehouseController.js";
 
 
 const router = express.Router();
+
+
+// Route to Create a new Warehouses
+router.post('/', addWarehouse);
+
+// Route to get list of users
+router.post('/get-users', getUsers);
 
 // Route to Create a new Things
 router.post('/create-thing', createThing)
@@ -31,8 +38,6 @@ router.post('/:id', deleteWarehouse);
 // Route to Search All Warehouses
 router.get('/:id', getWarehoseById);
 
-// Route to Create a new Warehouses
-router.post('/', addWarehouse);
 
 /*
 // Route to Delete a Thing from the Warehouses
@@ -61,9 +66,6 @@ router.get('/get-thingsByName', getThingByName);
 
 // Route to delete a operations
 router.post('/delete-operation', deleteOperations);
-
-// Route to get a new users
-router.get('/get-user', getUsers);
 
 // Route to get a new admins
 router.get('/get-admin', getAdmins);

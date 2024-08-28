@@ -76,7 +76,7 @@ export const addWarehouse = async (request, response) => {
             })
         })
 
-        response.status(200).send(warehouse);
+        response.status(200).send(newWarehouse);
 
     } catch (error) {
         console.log(error);
@@ -99,9 +99,6 @@ export const getWarehoseById = async (request, response) => {
         response.status(500).send({error: error.message})
     }
 };
-
-
-// DA TESTARE
 
 // Delete Warehouse
 async function clearUserList(warehouseId, warehouseList) {
@@ -145,13 +142,31 @@ export const deleteWarehouse = async (request, response) => {
         await clearThings(warehouse.lsThings);
         await clearOperations(warehouse.lsOperations)
 
-        return response.status(200).send({ message: "Magazzino eliminato con successo" });
+        response.status(200).send({ message: "Magazzino eliminato con successo" });
 
     } catch (error) {
         console.log(error);
-        return response.status(500).send({ error: error.message });
+        response.status(500).send({ error: error.message });
     }
 };
+
+// DA TESTARE
+
+// Get Users
+export const getUsers = async (request, response) => {
+    try {
+        const userIds = request.body.list;
+
+        const list = await Promise.all(userIds.map(async (userId) => {
+            return await searchUser(userId);
+        }));
+
+        response.status(200).send(list);
+    } catch (error) {
+        console.log(error);
+        response.status(500).send({ error: error.message });
+    }
+}
 
 // Create e new Thing in the Warehouse
 export const createThing = async (request, response) => {

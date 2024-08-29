@@ -150,8 +150,6 @@ export const deleteWarehouse = async (request, response) => {
     }
 };
 
-// DA TESTARE
-
 // Get Users
 export const getUsers = async (request, response) => {
     try {
@@ -162,6 +160,31 @@ export const getUsers = async (request, response) => {
         }));
 
         response.status(200).send(list);
+    } catch (error) {
+        console.log(error);
+        response.status(500).send({ error: error.message });
+    }
+}
+
+// DA TESTARE
+export const deleteUser = async (request, response) => {
+    try{
+        const warehouse = await warehouseModel.findById(request.body.warehouseId);
+
+        const user = await searchUser(request.body.sub);
+        user.lsWarehousesId.splice(user.lsWarehousesId.indexOf(request.body.warehouseId), 1);
+        await user.save();
+
+        if (request.body.type === 1) {
+            warehouse.lsAdminsId.splice(warehouse.lsAdminsId.indexOf(request.body.sub), 1);
+            await warehouse.save();
+            response.status(200).send(warehouse);
+        } else {
+            warehouse.lsUsersId.splice(warehouse.lsUsersId.indexOf(request.body.sub), 1);
+            await warehouse.save();
+            response.status(200).send(warehouse);
+        }
+
     } catch (error) {
         console.log(error);
         response.status(500).send({ error: error.message });

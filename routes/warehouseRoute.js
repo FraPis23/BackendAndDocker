@@ -5,11 +5,12 @@ import {
     deleteWarehouse,
     createThing,
     getUsers,
+    deleteUser
     /*
     deleteThing,
     createOperation,
     addUser,
-    deleteUser,
+    ,
     addAdmin,
     deleteAdmin,
     getThings,
@@ -28,6 +29,9 @@ router.post('/', addWarehouse);
 
 // Route to get list of users
 router.post('/get-users', getUsers);
+
+// Route to  delete users
+router.post('/delete-user', deleteUser);
 
 // Route to Create a new Things
 router.post('/create-thing', createThing)
@@ -49,8 +53,7 @@ router.post('/create-operation', createOperation);
 // Route to add a new users
 router.post('/add-user', addUser);
 
-// Route to  delete users
-router.post('/delete-user', deleteUser);
+
 
 // Route to create a new admins
 router.post('add-admin', addAdmin);

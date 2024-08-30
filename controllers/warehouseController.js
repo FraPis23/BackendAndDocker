@@ -166,7 +166,7 @@ export const getUsers = async (request, response) => {
     }
 }
 
-// DA TESTARE
+// Delete User
 export const deleteUser = async (request, response) => {
     try{
         const warehouse = await warehouseModel.findById(request.body.warehouseId);
@@ -188,6 +188,23 @@ export const deleteUser = async (request, response) => {
     } catch (error) {
         console.log(error);
         response.status(500).send({ error: error.message });
+    }
+}
+
+// DA TESTARE
+export const addUser = async (request, response) => {
+    try{
+
+        const warehouse = await warehouseModel.findById(request.body.warehouseId);
+        warehouse.lsUsersId.push(request.body.userId);
+        await warehouse.save();
+
+        return response.status(201).send({message: "Utente aggiunto al magazzino "});
+
+
+    }catch (error) {
+        console.log(error);
+        return response.status(500).send({ error: error.message });
     }
 }
 
@@ -319,31 +336,6 @@ export const deleteOperations = async (request, response) => {
         return response.status(500).send({ error: error.message });
     }
 };
-
-
-export const addUser = async (request, response) => {
-    try{
-
-        if (!request.body.warehouseId) {
-            return response.status(400).send("Assegnare l'ID del magazzino");
-        }
-        if (!request.body.userId) {
-            return response.status(400).send("Assegnare ID dell'utente");
-        }
-
-        const warehouse = await Warehouse.findById(request.body.warehouseId);
-        warehouse.lsUsersId.push(request.body.userId);
-        await warehouse.save();
-
-        return response.status(201).send({message: "Utente aggiunto al magazzino "});
-
-
-    }catch (error) {
-        console.log(error);
-        return response.status(500).send({ error: error.message });
-    }
-}
-
 
 export const addAdmin = async (request, response) => {
     try{

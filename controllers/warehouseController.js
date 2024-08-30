@@ -164,7 +164,7 @@ export const getUsers = async (request, response) => {
         console.log(error);
         response.status(500).send({ error: error.message });
     }
-}
+};
 
 // Delete User
 export const deleteUser = async (request, response) => {
@@ -189,9 +189,9 @@ export const deleteUser = async (request, response) => {
         console.log(error);
         response.status(500).send({ error: error.message });
     }
-}
+};
 
-// DA TESTARE
+// Add User
 export const addUser = async (request, response) => {
     try{
         const sub = await getSubByNickname(request.body.nickname);
@@ -210,9 +210,9 @@ export const addUser = async (request, response) => {
         console.log(error);
         response.status(500).send({ error: error.message });
     }
-}
+};
 
-// Create e new Thing in the Warehouse
+// Create Thing
 export const createThing = async (request, response) => {
     try{
 
@@ -228,7 +228,7 @@ export const createThing = async (request, response) => {
         const newThing = new thingModel(thing);
         await newThing.save();
 
-        warehouse.lsThings.push(thing);
+        warehouse.lsThings.push(newThing._id);
         await warehouse.save();
 
         return response.status(201).send({message:"Oggetto aggiunto con successo", thing, warehouse});
@@ -239,6 +239,38 @@ export const createThing = async (request, response) => {
     }
 };
 
+// Get Things
+export const getThings = async (request, response) => {
+
+    try {
+        const {id} = request.params;
+
+        if(!id)
+        {
+            return response.status(400).send("Assegnare l'ID del magazzino");
+        }
+
+        const warehouse = Warehouse.findById(id);
+        if(!warehouse)
+        {
+            return response.status(400).send("Magazzino non trovato");
+        }
+        const lsThings = warehouse.lsThings();
+        return response.status(200).send(lsThings);
+
+
+    }catch (error) {
+        console.log(error);
+        return response.status(500).send({error: error.message});
+    }
+};
+
+
+// DA TESTARE
+
+
+
+//da rivedere
 /*
 
 export const deleteThing = async (request, response) => {

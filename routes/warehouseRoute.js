@@ -7,13 +7,14 @@ import {
     getUsers,
     deleteUser,
     addUser,
+    getThings,
     /*
     deleteThing,
     createOperation
     ,
     addAdmin,
     deleteAdmin,
-    getThings,
+
     getThingByName,
     deleteOperations,
     getAdmins,
@@ -39,6 +40,9 @@ router.post('/delete-user', deleteUser);
 // Route to Create a new Things
 router.post('/create-thing', createThing)
 
+// Route to get a new things
+router.get('/get-things', getThings);
+
 // Route to Delete a Warehouse by Id
 router.post('/:id', deleteWarehouse);
 
@@ -59,8 +63,7 @@ router.post('add-admin', addAdmin);
 // Route to delete admins
 router.post('/delete-admin', deleteAdmin);
 
-// Route to get a new things
-router.get('/get-things', getThings);
+
 
 // Route to get a thingsByName
 router.get('/get-thingsByName', getThingByName);

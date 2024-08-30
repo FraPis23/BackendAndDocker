@@ -23,8 +23,8 @@ const thingSchema = new mongoose.Schema({
         default: 0
     },
     picture: {
-        type: String,
-        default: ""
+        type: Number,
+        default: 0
 
     }
 });

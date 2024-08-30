@@ -200,7 +200,7 @@ export const addUser = async (request, response) => {
         warehouse.lsUsersId.push(sub);
         await warehouse.save();
         const user = await searchUser(sub);
-        user.lsWarehousesId.push(request.body.warehousesId);
+        user.lsWarehousesId.push(request.body.warehouseId);
         await user.save();
 
         response.status(201).send(warehouse);

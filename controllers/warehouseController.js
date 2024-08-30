@@ -194,17 +194,21 @@ export const deleteUser = async (request, response) => {
 // DA TESTARE
 export const addUser = async (request, response) => {
     try{
+        const sub = await getSubByNickname(request.body.nickname);
 
         const warehouse = await warehouseModel.findById(request.body.warehouseId);
-        warehouse.lsUsersId.push(request.body.userId);
+        warehouse.lsUsersId.push(sub);
         await warehouse.save();
+        const user = await searchUser(sub);
+        user.lsWarehousesId.push(request.body.warehousesId);
+        await user.save();
 
-        return response.status(201).send({message: "Utente aggiunto al magazzino "});
+        response.status(201).send(warehouse);
 
 
     }catch (error) {
         console.log(error);
-        return response.status(500).send({ error: error.message });
+        response.status(500).send({ error: error.message });
     }
 }
 

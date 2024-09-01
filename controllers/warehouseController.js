@@ -171,18 +171,28 @@ export const deleteUser = async (request, response) => {
     try{
         const warehouse = await warehouseModel.findById(request.body.warehouseId);
 
-        const user = await searchUser(request.body.sub);
-        user.lsWarehousesId.splice(user.lsWarehousesId.indexOf(request.body.warehouseId), 1);
-        await user.save();
-
         if (request.body.type === 1) {
-            warehouse.lsAdminsId.splice(warehouse.lsAdminsId.indexOf(request.body.sub), 1);
-            await warehouse.save();
-            response.status(200).send(warehouse);
+            if (request.body.grade === warehouse.lsAdminsId[0]) {
+                const user = await searchUser(request.body.sub);
+                user.lsWarehousesId.splice(user.lsWarehousesId.indexOf(request.body.warehouseId), 1);
+                await user.save();
+                warehouse.lsAdminsId.splice(warehouse.lsAdminsId.indexOf(request.body.sub), 1);
+                await warehouse.save();
+                response.status(200).send(warehouse);
+            } else {
+                response.status(400).send(warehouse)
+            }
         } else {
-            warehouse.lsUsersId.splice(warehouse.lsUsersId.indexOf(request.body.sub), 1);
-            await warehouse.save();
-            response.status(200).send(warehouse);
+            if (warehouse.lsAdminsId.includes(request.body.grade)){
+                const user = await searchUser(request.body.sub);
+                user.lsWarehousesId.splice(user.lsWarehousesId.indexOf(request.body.warehouseId), 1);
+                await user.save();
+                warehouse.lsUsersId.splice(warehouse.lsUsersId.indexOf(request.body.sub), 1);
+                await warehouse.save();
+                response.status(200).send(warehouse);
+            } else {
+                response.status(400).send(warehouse)
+            }
         }
 
     } catch (error) {
@@ -194,19 +204,46 @@ export const deleteUser = async (request, response) => {
 // Add User
 export const addUser = async (request, response) => {
     try{
-        const sub = await getSubByNickname(request.body.nickname);
-
         const warehouse = await warehouseModel.findById(request.body.warehouseId);
-        warehouse.lsUsersId.push(sub);
-        await warehouse.save();
-        const user = await searchUser(sub);
-        user.lsWarehousesId.push(request.body.warehouseId);
-        await user.save();
-
-        response.status(201).send(warehouse);
-
+        if (warehouse.lsAdminsId.includes(request.body.grade)){
+            const sub = await getSubByNickname(request.body.nickname);
+            warehouse.lsUsersId.push(sub);
+            await warehouse.save();
+            const user = await searchUser(sub);
+            user.lsWarehousesId.push(request.body.warehouseId);
+            await user.save();
+            response.status(201).send(warehouse);
+        } else {
+            response.status(400).send(warehouse)
+        }
 
     }catch (error) {
+        console.log(error);
+        response.status(500).send({ error: error.message });
+    }
+};
+
+// Modify users permissions
+export const modifyPermissions = async (request, response) => {
+    try{
+        const warehouse = await warehouseModel.findById(request.body.warehouseId);
+
+        switch (request.body.type) {
+            case 1:
+                warehouse.lsAdminsId.splice(warehouse.lsAdminsId.indexOf(request.body.sub), 1);
+                warehouse.lsUsersId.push(request.body.sub);
+                await warehouse.save()
+                break
+            case 2:
+                warehouse.lsUsersId.splice(warehouse.lsUsersId.indexOf(request.body.sub), 1);
+                warehouse.lsAdminsId.push(request.body.sub);
+                await warehouse.save()
+                break
+        }
+
+        response.status(200).send(warehouse);
+
+    } catch (error) {
         console.log(error);
         response.status(500).send({ error: error.message });
     }
@@ -268,7 +305,7 @@ export const getThings = async (request, response) => {
 
 // DA TESTARE
 
-
+// Modify Permissions
 
 //da rivedere
 /*

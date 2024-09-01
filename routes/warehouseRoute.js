@@ -8,6 +8,7 @@ import {
     deleteUser,
     addUser,
     getThings,
+    modifyPermissions
     /*
     deleteThing,
     createOperation
@@ -36,6 +37,9 @@ router.post('/add-user', addUser);
 
 // Route to  delete users
 router.post('/delete-user', deleteUser);
+
+// Route to Modify Permissions
+router.post('/modify-permissions', modifyPermissions);
 
 // Route to Create a new Things
 router.post('/create-thing', createThing)

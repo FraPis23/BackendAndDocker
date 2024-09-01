@@ -230,15 +230,19 @@ export const modifyPermissions = async (request, response) => {
 
         switch (request.body.type) {
             case 1:
-                warehouse.lsAdminsId.splice(warehouse.lsAdminsId.indexOf(request.body.sub), 1);
-                warehouse.lsUsersId.push(request.body.sub);
-                await warehouse.save()
-                break
+                if (warehouse.lsAdminsId[0] === request.body.grade) {
+                    warehouse.lsAdminsId.splice(warehouse.lsAdminsId.indexOf(request.body.sub), 1);
+                    warehouse.lsUsersId.push(request.body.sub);
+                    await warehouse.save()
+                    break
+                }
             case 2:
-                warehouse.lsUsersId.splice(warehouse.lsUsersId.indexOf(request.body.sub), 1);
-                warehouse.lsAdminsId.push(request.body.sub);
-                await warehouse.save()
-                break
+                if (warehouse.lsAdminsId[0] === request.body.grade) {
+                    warehouse.lsUsersId.splice(warehouse.lsUsersId.indexOf(request.body.sub), 1);
+                    warehouse.lsAdminsId.push(request.body.sub);
+                    await warehouse.save()
+                    break
+                }
         }
 
         response.status(200).send(warehouse);

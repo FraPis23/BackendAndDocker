@@ -9,6 +9,8 @@ import thingRoute from "./routes/thingRoute.js";
 import dotenv from "dotenv";
 dotenv.config();
 
+import {Server} from "socket.io";
+
 import {clearCache} from './utils/cache.js'
 import {connectToDatabase} from "./utils/database.js";
 
@@ -26,6 +28,52 @@ const start = () => {
             credentials: true
         })
     );
+
+    const io = new Server({
+        cors: {
+            origin: "http://localhost:3000"
+        }
+    });
+
+    io.listen(4000);
+
+    io.on('connection', (socket) => {
+        console.log('New client connected');
+
+        socket.on('deleteUser', (data) => {
+            const {warehouseId} = data;
+            io.to(warehouseId).emit('userDeleted', data);
+        });
+
+        socket.on('modifyPermissions', (data) => {
+            const {warehouseId} = data;
+            io.to(warehouseId).emit('modifyPermissions', data);
+        })
+
+        socket.on('addUser', (data) => {
+            const {warehouseId} = data;
+            io.to(warehouseId).emit('addUser', data);
+        })
+
+        socket.on('deleteUser', (data) => {
+            const {warehouseId} = data;
+            io.to(warehouseId).emit('deleteUser', data);
+        })
+
+        socket.on('joinWarehouse', (warehouseId) => {
+            socket.join(warehouseId);
+            console.log(`Client joined warehouse: ${warehouseId}`);
+        });
+
+        socket.on('leaveWarehouse', (warehouseId) => {
+            socket.leave(warehouseId);
+            console.log(`Client left warehouse: ${warehouseId}`);
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Client disconnected');
+        });
+    });
 
     app.use(checkJwt);
 

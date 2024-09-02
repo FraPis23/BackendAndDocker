@@ -180,7 +180,7 @@ export const deleteUser = async (request, response) => {
                 await warehouse.save();
                 response.status(200).send(warehouse);
             } else {
-                response.status(400).send(warehouse)
+                response.status(200).send(warehouse)
             }
         } else {
             if (warehouse.lsAdminsId.includes(request.body.grade)){
@@ -191,7 +191,7 @@ export const deleteUser = async (request, response) => {
                 await warehouse.save();
                 response.status(200).send(warehouse);
             } else {
-                response.status(400).send(warehouse)
+                response.status(200).send(warehouse)
             }
         }
 
@@ -214,9 +214,8 @@ export const addUser = async (request, response) => {
             await user.save();
             response.status(201).send(warehouse);
         } else {
-            response.status(400).send(warehouse)
+            response.status(200).send(warehouse)
         }
-
     }catch (error) {
         console.log(error);
         response.status(500).send({ error: error.message });

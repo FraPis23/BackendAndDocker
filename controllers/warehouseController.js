@@ -92,8 +92,10 @@ export const getWarehoseById = async (request, response) => {
 
         const warehouse = await warehouseModel.findById(id).populate('lsThings').populate('lsOperations');
 
-        return response.status(200).send(warehouse);
-
+        if (!warehouse) {
+            response(200).send({});
+        }
+        response.status(200).send(warehouse);
     } catch(error){
         console.log(error);
         response.status(500).send({error: error.message})

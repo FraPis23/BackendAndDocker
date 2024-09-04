@@ -10,7 +10,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import {initializeSocket} from "./utils/socket.js";
-import {clearCache} from './utils/cache.js'
 import {connectToDatabase} from "./utils/database.js";
 
 const start = () => {
@@ -49,5 +48,4 @@ const start = () => {
     });
 }
 
-setInterval(clearCache, 1000*60*60*24);
 connectToDatabase(start);

@@ -33,6 +33,16 @@ export const initializeSocket = (/*server*/) => {
             io.to(warehouseId).emit('deleteWarehouse');
         })
 
+        socket.on('addThing', (data) => {
+            const {warehouseId} = data;
+            io.to(warehouseId).emit('addThing', data);
+        })
+
+        socket.on('deletedThing', (data) => {
+            const {warehouseId} = data;
+            io.to(warehouseId).emit('deleteThing', data);
+        })
+
         socket.on('joinWarehouse', (warehouseId) => {
             socket.join(warehouseId);
             console.log(`Client joined warehouse: ${warehouseId}`);

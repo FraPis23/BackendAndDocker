@@ -180,9 +180,11 @@ export const deleteUser = async (request, response) => {
                 await user.save();
                 warehouse.lsAdminsId.splice(warehouse.lsAdminsId.indexOf(request.body.sub), 1);
                 await warehouse.save();
-                response.status(200).send(warehouse);
+                const warehouseToSend = await warehouse.populate("lsThings");
+                response.status(201).send(warehouseToSend);
             } else {
-                response.status(200).send(warehouse)
+                const warehouseToSend = await warehouse.populate("lsThings");
+                response.status(201).send(warehouseToSend);
             }
         } else {
             if (warehouse.lsAdminsId.includes(request.body.grade)){
@@ -191,9 +193,11 @@ export const deleteUser = async (request, response) => {
                 await user.save();
                 warehouse.lsUsersId.splice(warehouse.lsUsersId.indexOf(request.body.sub), 1);
                 await warehouse.save();
-                response.status(200).send(warehouse);
+                const warehouseToSend = await warehouse.populate("lsThings");
+                response.status(201).send(warehouseToSend);
             } else {
-                response.status(200).send(warehouse)
+                const warehouseToSend = await warehouse.populate("lsThings");
+                response.status(201).send(warehouseToSend);
             }
         }
 
@@ -214,9 +218,11 @@ export const addUser = async (request, response) => {
             const user = await searchUser(sub);
             user.lsWarehousesId.push(request.body.warehouseId);
             await user.save();
-            response.status(201).send(warehouse);
+            const warehouseToSend = await warehouse.populate("lsThings");
+            response.status(201).send(warehouseToSend);
         } else {
-            response.status(200).send(warehouse)
+            const warehouseToSend = await warehouse.populate("lsThings");
+            response.status(201).send(warehouseToSend);
         }
     }catch (error) {
         console.log(error);
@@ -246,7 +252,8 @@ export const modifyPermissions = async (request, response) => {
                 }
         }
 
-        response.status(200).send(warehouse);
+        const warehouseToSend = await warehouse.populate("lsThings");
+        response.status(201).send(warehouseToSend);
 
     } catch (error) {
         console.log(error);
@@ -270,14 +277,15 @@ export const createThing = async (request, response) => {
         const newThing = new thingModel(thing);
         await newThing.save();
 
-        warehouse.lsThings.push(newThing._id);
+        warehouse.lsThings.push(newThing);
         await warehouse.save();
 
-        return response.status(201).send({message:"Oggetto aggiunto con successo", thing, warehouse});
+        const warehouseToSend = await warehouse.populate("lsThings");
+        response.status(201).send(warehouseToSend);
 
     } catch (error) {
         console.log(error);
-        return response.status(500).json({error: error.message});
+        response.status(500).json({error: error.message});
     }
 };
 
@@ -307,6 +315,21 @@ export const getThings = async (request, response) => {
     }
 };
 
+// Delete Thing
+export const deleteThing = async (request, response) => {
+    try {
+        const warehouse = await warehouseModel.findById(request.body.warehouseId);
+        warehouse.lsThings.splice(warehouse.lsThings.indexOf(request.body.thingId), 1);
+        await warehouse.save();
+
+        const warehouseToSend = await warehouse.populate("lsThings");
+        response.status(201).send(warehouseToSend);
+
+    } catch (error) {
+        console.log(error);
+        response.status(500).send({error: error.message});
+    }
+};
 
 // DA TESTARE
 

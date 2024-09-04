@@ -8,9 +8,10 @@ import {
     deleteUser,
     addUser,
     getThings,
-    modifyPermissions
-    /*
+    modifyPermissions,
     deleteThing,
+    /*
+
     createOperation
     ,
     addAdmin,
@@ -47,6 +48,9 @@ router.post('/create-thing', createThing)
 // Route to get a new things
 router.get('/get-things', getThings);
 
+// Route to Delete a Thing from the Warehouses
+router.post('/delete-thing', deleteThing);
+
 // Route to Delete a Warehouse by Id
 router.post('/:id', deleteWarehouse);
 
@@ -55,8 +59,7 @@ router.get('/:id', getWarehoseById);
 
 
 /*
-// Route to Delete a Thing from the Warehouses
-router.post('/delete-thing', deleteThing);
+
 
 // Route to create a new operations
 router.post('/create-operation', createOperation);

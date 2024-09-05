@@ -10,6 +10,7 @@ import {
     getThings,
     modifyPermissions,
     deleteThing,
+    modifyQuantity
     /*
 
     createOperation
@@ -50,6 +51,9 @@ router.get('/get-things', getThings);
 
 // Route to Delete a Thing from the Warehouses
 router.post('/delete-thing', deleteThing);
+
+// Route to Modify the Quantity of a Thing
+router.post('/modify-quantity', modifyQuantity);
 
 // Route to Delete a Warehouse by Id
 router.post('/:id', deleteWarehouse);

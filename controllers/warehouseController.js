@@ -331,6 +331,21 @@ export const deleteThing = async (request, response) => {
     }
 };
 
+// Modify Quantity
+export const modifyQuantity = async (request, response) => {
+    try {
+        const thing = await thingModel.findByIdAndUpdate(request.body.thingId, {$inc: {quantity: request.body.quantity}});
+        await thing.save();
+        const warehouse = await warehouseModel.findById(request.body.warehouseId).populate("lsThings")
+
+        response.status(201).send(warehouse);
+
+    } catch (error) {
+        console.log(error);
+        response.status(500).send({error: error.message});
+    }
+}
+
 // DA TESTARE
 
 // Modify Permissions

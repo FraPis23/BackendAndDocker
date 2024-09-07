@@ -264,7 +264,7 @@ export const modifyPermissions = async (request, response) => {
 // Create Thing
 export const createThing = async (request, response) => {
     try{
-        const warehouse = await warehouseModel.findById(request.body.warehouseId).populate("lsThings");
+        const warehouse = await warehouseModel.findById(request.body.warehouseId);
         if (warehouse.lsAdminsId.includes(request.body.grade)) {
             const thing = {
                 name: request.body.name,
@@ -279,7 +279,9 @@ export const createThing = async (request, response) => {
             warehouse.lsThings.push(newThing);
             await warehouse.save();
 
-            response.status(201).send(warehouse);
+            const warehouseToSend = await warehouse.populate("lsThings")
+
+            response.status(201).send(warehouseToSend);
         } else {
             response.status(201).send(warehouse);
         }
@@ -318,15 +320,21 @@ export const getThings = async (request, response) => {
 // Delete Thing
 export const deleteThing = async (request, response) => {
     try {
-        const warehouse = await warehouseModel.findById(request.body.warehouseId).populate("lsThings");
+        const warehouse = await warehouseModel.findById(request.body.warehouseId);
+
         if (warehouse.lsAdminsId.includes(request.body.grade)) {
             warehouse.lsThings.splice(warehouse.lsThings.indexOf(request.body.thingId), 1);
             await warehouse.save();
 
-            response.status(201).send(warehouse);
+            await thingModel.findByIdAndDelete(request.body.thingId);
+
+            const warehouseToSend = await warehouse.populate("lsThings");
+            response.status(201).send(warehouseToSend);
         } else {
-            response.status(201).send(warehouse)
+            const warehouseToSend = await warehouse.populate("lsThings");
+            response.status(201).send(warehouseToSend);
         }
+
 
     } catch (error) {
         console.log(error);
@@ -337,11 +345,15 @@ export const deleteThing = async (request, response) => {
 // Modify Quantity
 export const modifyQuantity = async (request, response) => {
     try {
-        const thing = await thingModel.findByIdAndUpdate(request.body.thingId, {$inc: {quantity: request.body.quantity}});
-        await thing.save();
-        const warehouse = await warehouseModel.findById(request.body.warehouseId).populate("lsThings")
+        const warehouse = await warehouseModel.findById(request.body.warehouseId)
+        if (warehouse.lsAdminsId.includes(request.body.grade)) {
+            const thing = await thingModel.findByIdAndUpdate(request.body.thingId, {$inc: {quantity: request.body.quantity}});
+            await thing.save();
+            await warehouse.save();
+        }
 
-        response.status(201).send(warehouse);
+        const warehouseToSend = await warehouse.populate("lsThings");
+        response.status(201).send(warehouseToSend);
 
     } catch (error) {
         console.log(error);

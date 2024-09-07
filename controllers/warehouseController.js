@@ -264,25 +264,25 @@ export const modifyPermissions = async (request, response) => {
 // Create Thing
 export const createThing = async (request, response) => {
     try{
+        const warehouse = await warehouseModel.findById(request.body.warehouseId).populate("lsThings");
+        if (warehouse.lsAdminsId.includes(request.body.grade)) {
+            const thing = {
+                name: request.body.name,
+                quantity: request.body.quantity,
+                minQuantity: request.body.minQuantity,
+                picture: request.body.picture
+            }
 
-        const warehouse = await warehouseModel.findById(request.body.warehouseId);
+            const newThing = new thingModel(thing);
+            await newThing.save();
 
-        const thing = {
-            name: request.body.name,
-            quantity: request.body.quantity,
-            minQuantity: request.body.minQuantity,
-            picture: request.body.picture
+            warehouse.lsThings.push(newThing);
+            await warehouse.save();
+
+            response.status(201).send(warehouse);
+        } else {
+            response.status(201).send(warehouse);
         }
-
-        const newThing = new thingModel(thing);
-        await newThing.save();
-
-        warehouse.lsThings.push(newThing);
-        await warehouse.save();
-
-        const warehouseToSend = await warehouse.populate("lsThings");
-        response.status(201).send(warehouseToSend);
-
     } catch (error) {
         console.log(error);
         response.status(500).json({error: error.message});
@@ -318,12 +318,15 @@ export const getThings = async (request, response) => {
 // Delete Thing
 export const deleteThing = async (request, response) => {
     try {
-        const warehouse = await warehouseModel.findById(request.body.warehouseId);
-        warehouse.lsThings.splice(warehouse.lsThings.indexOf(request.body.thingId), 1);
-        await warehouse.save();
+        const warehouse = await warehouseModel.findById(request.body.warehouseId).populate("lsThings");
+        if (warehouse.lsAdminsId.includes(request.body.grade)) {
+            warehouse.lsThings.splice(warehouse.lsThings.indexOf(request.body.thingId), 1);
+            await warehouse.save();
 
-        const warehouseToSend = await warehouse.populate("lsThings");
-        response.status(201).send(warehouseToSend);
+            response.status(201).send(warehouse);
+        } else {
+            response.status(201).send(warehouse)
+        }
 
     } catch (error) {
         console.log(error);

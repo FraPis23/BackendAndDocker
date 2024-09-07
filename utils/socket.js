@@ -11,7 +11,6 @@ export const initializeSocket = (/*server*/) => {
     io.listen(4000);
 
     io.on('connection', (socket) => {
-        console.log('New client connected');
 
         socket.on('deleteUser', (data) => {
             const {warehouseId} = data;
@@ -50,12 +49,10 @@ export const initializeSocket = (/*server*/) => {
 
         socket.on('joinWarehouse', (warehouseId) => {
             socket.join(warehouseId);
-            console.log(`Client joined warehouse: ${warehouseId}`);
         });
 
         socket.on('leaveWarehouse', (warehouseId) => {
             socket.leave(warehouseId);
-            console.log(`Client left warehouse: ${warehouseId}`);
         });
 
         socket.on('disconnect', () => {

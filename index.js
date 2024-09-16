@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from "cors";
 import {auth} from 'express-oauth2-jwt-bearer'
+import path from "path";
 
 import userRoute from "./routes/userRoute.js";
 import warehouseRoute from "./routes/warehouseRoute.js";
@@ -21,6 +22,8 @@ const start = () => {
 
     const app = express();
 
+    app.use(express.static(path.join('./build')));
+
     app.use(cors({
             origin: ["http://localhost:3000"],
             credentials: true
@@ -40,6 +43,10 @@ const start = () => {
     app.use('/api/warehouses', warehouseRoute);
 
     app.use('/api/things', thingRoute)
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.join('./build', 'index.html'));
+    });
 
     const port = process.env.PORT;
     const host = process.env.HOST;

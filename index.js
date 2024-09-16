@@ -2,6 +2,8 @@ import express from 'express';
 import cors from "cors";
 import {auth} from 'express-oauth2-jwt-bearer'
 import path from "path";
+import {fileURLToPath} from 'url'
+import http from "http";
 
 import userRoute from "./routes/userRoute.js";
 import warehouseRoute from "./routes/warehouseRoute.js";
@@ -13,6 +15,9 @@ dotenv.config();
 import {initializeSocket} from "./utils/socket.js";
 import {connectToDatabase} from "./utils/database.js";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const start = () => {
     const checkJwt = auth({
         audience: 'warehouse-certificate',
@@ -22,7 +27,7 @@ const start = () => {
 
     const app = express();
 
-    app.use(express.static(path.join('./build')));
+    app.use(express.static(path.join(__dirname, './build')));
 
     app.use(cors({
             origin: ["http://localhost:3000"],
@@ -30,9 +35,9 @@ const start = () => {
         })
     );
 
-    //const server = http.createServer(app);
+    const server = http.createServer(app);
 
-    initializeSocket(/*server*/);
+    initializeSocket(server);
 
     app.use(checkJwt);
 
@@ -45,7 +50,7 @@ const start = () => {
     app.use('/api/things', thingRoute)
 
     app.get('*', (req, res) => {
-        res.sendFile(path.join('./build', 'index.html'));
+        res.sendFile(path.join(__dirname, './build', 'index.html'));
     });
 
     const port = process.env.PORT;

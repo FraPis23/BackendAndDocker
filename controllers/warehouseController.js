@@ -346,7 +346,7 @@ export const deleteThing = async (request, response) => {
 export const modifyQuantity = async (request, response) => {
     try {
         const warehouse = await warehouseModel.findById(request.body.warehouseId)
-        if (warehouse.lsAdminsId.includes(request.body.grade)) {
+        if (warehouse.lsAdminsId.includes(request.body.grade) || warehouse.lsUsersId.includes(request.body.grade)) {
             const thing = await thingModel.findByIdAndUpdate(request.body.thingId, {$inc: {quantity: request.body.quantity}});
             await thing.save();
             await warehouse.save();

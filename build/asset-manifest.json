@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.16b4c741.css",
-    "main.js": "/static/js/main.63bf52b0.js",
+    "main.css": "/static/css/main.4136edfa.css",
+    "main.js": "/static/js/main.055be676.js",
     "static/media/warehouse.jpg": "/static/media/warehouse.1011e3d81f4d4f6f7720.jpg",
     "static/media/warehouseLogo-removebg-preview-fotor-2024081683521.png": "/static/media/warehouseLogo-removebg-preview-fotor-2024081683521.ffcfe79b1900f4b81f63.png",
     "static/media/warehouseLogo-removebg-preview.png": "/static/media/warehouseLogo-removebg-preview.a812f368eef9db276cc8.png",
@@ -10,15 +10,15 @@
     "static/media/screw.jpg": "/static/media/screw.f25ed21559d1498bfc77.jpg",
     "static/media/warehouse-management.png": "/static/media/warehouse-management.07e90bdd0bcfc0395332.png",
     "static/media/hammer.jpg": "/static/media/hammer.3a15929994bafe819026.jpg",
-    "static/media/dick.png": "/static/media/dick.5fb428c6f1ab52936529.png",
     "static/media/brick.jpg": "/static/media/brick.cb6a7175d400584e6464.jpg",
     "static/media/warehouse.png": "/static/media/warehouse.0a70aa43ba1ac65a5bb7.png",
+    "static/media/storehouse.png": "/static/media/storehouse.77da4a431b15635dde23.png",
     "index.html": "/index.html",
-    "main.16b4c741.css.map": "/static/css/main.16b4c741.css.map",
-    "main.63bf52b0.js.map": "/static/js/main.63bf52b0.js.map"
+    "main.4136edfa.css.map": "/static/css/main.4136edfa.css.map",
+    "main.055be676.js.map": "/static/js/main.055be676.js.map"
   },
   "entrypoints": [
-    "static/css/main.16b4c741.css",
-    "static/js/main.63bf52b0.js"
+    "static/css/main.4136edfa.css",
+    "static/js/main.055be676.js"
   ]
 }

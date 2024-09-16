@@ -1,10 +1,10 @@
 import {Server} from "socket.io";
 
-export const initializeSocket = (server) => {
+export const initializeSocket = (/*server*/) => {
 
-    const io = new Server(server, {
+    const io = new Server({
         cors: {
-            origin: "http://localhost:3000"
+            origin: "http://localhost:5555"
         }
     });
 

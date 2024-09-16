@@ -27,25 +27,16 @@ const start = () => {
 
     const app = express();
 
+
+    app.use(cors({origin: '*'}));
+
     app.use(express.static(path.join(__dirname, './build')));
-
-    app.use(cors({
-            origin: ["http://localhost:3000"],
-            credentials: true
-        })
-    );
-
-    const server = http.createServer(app);
-
-    initializeSocket(server);
-
-    app.use(checkJwt);
-
+    initializeSocket(/*server*/);
     app.use(express.json());
 
-    app.use('/api/users', userRoute);
+    app.use('/api/users', checkJwt, userRoute);
 
-    app.use('/api/warehouses', warehouseRoute);
+    app.use('/api/warehouses',checkJwt, warehouseRoute);
 
     app.use('/api/things', thingRoute)
 

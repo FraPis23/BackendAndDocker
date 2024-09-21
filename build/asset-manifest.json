@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.4136edfa.css",
-    "main.js": "/static/js/main.055be676.js",
+    "main.css": "/static/css/main.e24463a0.css",
+    "main.js": "/static/js/main.794ef87d.js",
     "static/media/warehouse.jpg": "/static/media/warehouse.1011e3d81f4d4f6f7720.jpg",
     "static/media/warehouseLogo-removebg-preview-fotor-2024081683521.png": "/static/media/warehouseLogo-removebg-preview-fotor-2024081683521.ffcfe79b1900f4b81f63.png",
     "static/media/warehouseLogo-removebg-preview.png": "/static/media/warehouseLogo-removebg-preview.a812f368eef9db276cc8.png",
@@ -14,11 +14,11 @@
     "static/media/warehouse.png": "/static/media/warehouse.0a70aa43ba1ac65a5bb7.png",
     "static/media/storehouse.png": "/static/media/storehouse.77da4a431b15635dde23.png",
     "index.html": "/index.html",
-    "main.4136edfa.css.map": "/static/css/main.4136edfa.css.map",
-    "main.055be676.js.map": "/static/js/main.055be676.js.map"
+    "main.e24463a0.css.map": "/static/css/main.e24463a0.css.map",
+    "main.794ef87d.js.map": "/static/js/main.794ef87d.js.map"
   },
   "entrypoints": [
-    "static/css/main.4136edfa.css",
-    "static/js/main.055be676.js"
+    "static/css/main.e24463a0.css",
+    "static/js/main.794ef87d.js"
   ]
 }

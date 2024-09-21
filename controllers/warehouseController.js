@@ -137,8 +137,6 @@ export const deleteWarehouse = async (request, response) => {
 
         const warehouse = await warehouseModel.findByIdAndDelete(id);
 
-        console.log("magazzini", warehouse);
-        console.log("amministratori" ,warehouse.lsAdminsId)
         await clearUserList(id, warehouse.lsAdminsId);
         await clearUserList(id, warehouse.lsUsersId);
         await clearThings(warehouse.lsThings);
@@ -183,8 +181,7 @@ export const deleteUser = async (request, response) => {
                 const warehouseToSend = await warehouse.populate("lsThings");
                 response.status(201).send(warehouseToSend);
             } else {
-                const warehouseToSend = await warehouse.populate("lsThings");
-                response.status(201).send(warehouseToSend);
+                response.status(401).send("Utente non autorizzato");
             }
         } else {
             if (warehouse.lsAdminsId.includes(request.body.grade)){
@@ -196,8 +193,7 @@ export const deleteUser = async (request, response) => {
                 const warehouseToSend = await warehouse.populate("lsThings");
                 response.status(201).send(warehouseToSend);
             } else {
-                const warehouseToSend = await warehouse.populate("lsThings");
-                response.status(201).send(warehouseToSend);
+                response.status(401).send("Utente non autorizzato");
             }
         }
 
@@ -213,16 +209,20 @@ export const addUser = async (request, response) => {
         const warehouse = await warehouseModel.findById(request.body.warehouseId);
         if (warehouse.lsAdminsId.includes(request.body.grade)){
             const sub = await getSubByNickname(request.body.nickname);
-            warehouse.lsUsersId.push(sub);
-            await warehouse.save();
-            const user = await searchUser(sub);
-            user.lsWarehousesId.push(request.body.warehouseId);
-            await user.save();
-            const warehouseToSend = await warehouse.populate("lsThings");
-            response.status(201).send(warehouseToSend);
+            if(sub && !warehouse.lsUsersId.includes(sub)){
+                warehouse.lsUsersId.push(sub);
+                await warehouse.save();
+                const user = await searchUser(sub);
+                user.lsWarehousesId.push(request.body.warehouseId);
+                await user.save();
+                const warehouseToSend = await warehouse.populate("lsThings");
+                response.status(201).send(warehouseToSend);
+            } else {
+                const warehouseToSend = await warehouse.populate("lsThings");
+                response.status(201).send(warehouseToSend);
+            }
         } else {
-            const warehouseToSend = await warehouse.populate("lsThings");
-            response.status(201).send(warehouseToSend);
+            response.status(401).send("Utente non autorizzato");
         }
     }catch (error) {
         console.log(error);
@@ -283,7 +283,7 @@ export const createThing = async (request, response) => {
 
             response.status(201).send(warehouseToSend);
         } else {
-            response.status(201).send(warehouse);
+            response.status(401).send("Utente non autorizzato");
         }
     } catch (error) {
         console.log(error);
@@ -331,8 +331,7 @@ export const deleteThing = async (request, response) => {
             const warehouseToSend = await warehouse.populate("lsThings");
             response.status(201).send(warehouseToSend);
         } else {
-            const warehouseToSend = await warehouse.populate("lsThings");
-            response.status(201).send(warehouseToSend);
+            response.status(401).send("Utente non autorizzato");
         }
 
 
